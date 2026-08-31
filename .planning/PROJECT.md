@@ -42,6 +42,7 @@ The "wow" moment: a user sees that the points they were about to burn at 1¢ eac
 - **Audience:** Primary — beginners sitting on 50K–200K points who redeem at ~1¢/pt or let them rot. Secondary — LinkedIn viewers (recruiters/hiring managers) evaluating the owner's product and engineering judgment. Production quality matters: real deploy, clean UI, not a toy.
 - **Knowledge base:** The curated redemption data doubles as the foundation for the v2 AI advisor. Nick supplies the picks; entries are drafted collaboratively and corrected by him before ship.
 - **Original brief:** `PROJECT-BRIEF.md` in repo root.
+- **Automation:** Nick runs an n8n server — the intended path for future automation (transfer-bonus ingestion, data refresh alerts). Not used in v1.
 
 ## Constraints
 
