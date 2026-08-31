@@ -70,7 +70,20 @@
 
 ## Traceability
 
-(Filled by roadmap — maps each REQ-ID to a phase)
+| REQ-ID | Phase |
+|--------|-------|
+| INPUT-01, INPUT-02, INPUT-03 | Phase 4 — Core Experience |
+| RANK-01, RANK-02, RANK-03, RANK-04, RANK-05 | Phase 4 — Core Experience |
+| VAL-01, VAL-04 | Phase 4 — Core Experience |
+| VAL-02, VAL-05 | Phase 3 — Valuation & Ranking Engine |
+| VAL-03 | Phase 5 — Credibility Layer |
+| DATA-01, DATA-02, DATA-03, DATA-04 | Phase 2 — Redemption Database |
+| ACCT-01, ACCT-02, ACCT-03, ACCT-04 | Phase 6 — Accounts & Legal |
+| PLAT-01 | Phase 1 — Foundation |
+| PLAT-02, PLAT-05 | Phase 7 — Editorial Polish & Launch |
+| PLAT-03, PLAT-04 | Phase 5 — Credibility Layer |
+
+All 25 v1 requirements mapped. ✓
 
 ---
 *Defined: 2026-08-31 · 25 v1 requirements across 6 categories*
