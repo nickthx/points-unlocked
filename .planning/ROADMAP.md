@@ -28,10 +28,14 @@ Build bottom-up in horizontal layers: stand up the production skeleton on Vercel
   1. A Next.js 16 (App Router) app with Tailwind v4 + shadcn/ui builds clean and deploys to a public Vercel URL
   2. Neon Postgres (via Vercel Marketplace) is connected through Drizzle with env vars flowing locally and in production
   3. Pushing to main auto-deploys; lint, typecheck, and test commands run green
-**Plans**: TBD
+**Plans**: 5 plans
 
 Plans:
-- [ ] 01-01: TBD
+- [ ] 01-01-PLAN.md — Scaffold Next.js 16 + toolchain (Vitest, Prettier, typecheck) + D-14 directory skeleton
+- [ ] 01-02-PLAN.md — shadcn/ui set, Fraunces+Inter @theme tokens, D-04 homepage with noindex
+- [ ] 01-03-PLAN.md — GitHub remote + advisory CI workflow (lint/typecheck/test green checks)
+- [ ] 01-04-PLAN.md — Vercel project + Git auto-deploy + Neon Marketplace integration + env pull (human checkpoint)
+- [ ] 01-05-PLAN.md — Drizzle wiring, health_check push to Neon, server-component query, production deploy verification
 
 ### Phase 2: Redemption Database
 **Goal**: The curated dataset exists as structured, verified data — the substance every other layer reads
@@ -122,7 +126,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 (5 and 6 
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/TBD | Not started | - |
+| 1. Foundation | 0/5 | Planned | - |
 | 2. Redemption Database | 0/TBD | Not started | - |
 | 3. Valuation & Ranking Engine | 0/TBD | Not started | - |
 | 4. Core Experience | 0/TBD | Not started | - |
