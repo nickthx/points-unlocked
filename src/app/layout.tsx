@@ -20,6 +20,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Points Unlocked",
   description: "See what your credit card points are actually worth.",
+  // D-03 noindex gate: keep the pre-launch site out of search indexes.
+  // Removing this is an explicit Phase 7 launch-gate task.
+  robots: { index: false, follow: false },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
