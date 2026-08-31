@@ -32,8 +32,8 @@ Build bottom-up in horizontal layers: stand up the production skeleton on Vercel
 
 Plans:
 - [x] 01-01-PLAN.md — Scaffold Next.js 16 + toolchain (Vitest, Prettier, typecheck) + D-14 directory skeleton
-- [ ] 01-02-PLAN.md — shadcn/ui set, Fraunces+Inter @theme tokens, D-04 homepage with noindex
-- [ ] 01-03-PLAN.md — GitHub remote + advisory CI workflow (lint/typecheck/test green checks)
+- [x] 01-02-PLAN.md — shadcn/ui set, Fraunces+Inter @theme tokens, D-04 homepage with noindex
+- [x] 01-03-PLAN.md — GitHub remote + advisory CI workflow (lint/typecheck/test green checks)
 - [ ] 01-04-PLAN.md — Vercel project + Git auto-deploy + Neon Marketplace integration + env pull (human checkpoint)
 - [ ] 01-05-PLAN.md — Drizzle wiring, health_check push to Neon, server-component query, production deploy verification
 
