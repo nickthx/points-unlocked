@@ -37,10 +37,16 @@ export const transferRouteSeedSchema = z
     { message: "bonus fields must be set together" },
   );
 
-// Assumption A4 (pending Nick's confirmation at the DATA-04 checkpoint):
+// Assumption A4 (CONFIRMED by Nick 2026-09-01 at the DATA-04 checkpoint):
 // promotional transfer bonuses multiply the base-converted amount and do NOT
 // stack with structural block bonuses (Marriott 5K/60K). The engine applies
-// whichever applies to the route, never both compounded.
+// whichever applies to the route, never both compounded. The live Amex→Hilton
+// promo math (1,000 MR → 2,600 Hilton = 2.0 × 1.30) matches this model exactly.
+//
+// Cash-fare benchmark convention (CONFIRMED by Nick 2026-09-01; Phase 3's
+// methodology page inherits this verbatim): cashFareCents uses discounted
+// realistic retail fares for economy and business benchmarks, and
+// undiscounted retail fares for First class.
 export const transferBonusSeedSchema = z
   .object({
     fromProgramSlug: slug,

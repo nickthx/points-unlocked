@@ -1,11 +1,13 @@
 import type { RedemptionSeed } from "./types";
 
-// Hotel redemption drafts (DATA-01). Same rules as the flight file: every
-// entry is a Claude draft with verifiedAt: null and a sourceNote naming what
-// Nick must check. Hotel points/cash values are PER NIGHT; dynamic programs
-// (Hyatt peak/off-peak, Hilton, Marriott) always use pointsMin/pointsMax
-// ranges. taxesFeesCents is 0 where award nights typically include taxes —
-// verify per property (resort/destination fees can still apply).
+// Hotel redemptions (DATA-01/DATA-04). 13 of 15 entries verified by Nick on
+// 2026-09-01 against live 2026 sources (ruling log: .planning/phases/
+// 02-redemption-database/02-05-corrections.md); st-regis-maldives and
+// gritti-palace-venice remain verifiedAt: null pending a manual marriott.com
+// check. Hotel points/cash values are PER NIGHT; dynamic programs (Hyatt
+// peak/off-peak, Hilton, Marriott) use pointsMin/pointsMax ranges.
+// taxesFeesCents is 0 where award nights typically include taxes — verify per
+// property (resort/destination fees can still apply).
 
 export const hotelRedemptions = [
   // ── World of Hyatt (direct use — Chase UR / Bilt transfer 1:1) ───────────
@@ -18,7 +20,7 @@ export const hotelRedemptions = [
     destination: "Tokyo, Japan",
     cabin: null,
     pointsMin: 35000,
-    pointsMax: 45000,
+    pointsMax: 75000,
     taxesFeesCents: 0,
     cashFareCents: 130000,
     availabilityRating: "plan_ahead",
@@ -27,8 +29,8 @@ export const hotelRedemptions = [
     methodologyNote:
       "Cash rate benchmarked as a representative high-season nightly rate incl. taxes.",
     sourceNote:
-      "CLAUDE DRAFT — verify current Hyatt category/peak pricing for Park Hyatt Tokyo (2026 devaluation moved top properties) and a live cash-rate comp.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — Category 8; May 20 2026 five-tier chart tops out at 75K/night. Reopened Dec 2025 post-renovation.",
+    verifiedAt: "2026-09-01",
     imageSlug: "tokyo",
     featured: true,
     notes: null,
@@ -42,17 +44,17 @@ export const hotelRedemptions = [
     destination: "Big Sur, California",
     cabin: null,
     pointsMin: 35000,
-    pointsMax: 45000,
+    pointsMax: 75000,
     taxesFeesCents: 0,
     cashFareCents: 220000,
     availabilityRating: "hard_to_find",
     bookingHint:
-      "Award nights include the all-inclusive food and activities — enormous per-point value.\nStandard award inventory is tiny; set alerts and book the moment dates open.\nTransfer Chase UR or Bilt 1:1.",
+      "Award nights include the all-inclusive food and activities (alcohol NOT included) — enormous per-point value.\nStandard award inventory is tiny; set alerts and book the moment dates open.\nTransfer Chase UR or Bilt 1:1.",
     methodologyNote:
       "Cash rate benchmarked as a representative nightly all-inclusive rate incl. taxes.",
     sourceNote:
-      "CLAUDE DRAFT — verify current category/peak points and that awards still include the all-inclusive package in 2026.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — base tiers 35/40/45K with the five-tier Top at 75K; all-inclusive package confirmed but excludes alcohol.",
+    verifiedAt: "2026-09-01",
     imageSlug: "big-sur",
     featured: false,
     notes: null,
@@ -65,8 +67,8 @@ export const hotelRedemptions = [
     origin: null,
     destination: "Paris, France",
     cabin: null,
-    pointsMin: 40000,
-    pointsMax: 50000,
+    pointsMin: 35000,
+    pointsMax: 75000,
     taxesFeesCents: 0,
     cashFareCents: 160000,
     availabilityRating: "plan_ahead",
@@ -75,8 +77,8 @@ export const hotelRedemptions = [
     methodologyNote:
       "Cash rate benchmarked as a representative high-season nightly rate incl. taxes.",
     sourceNote:
-      "CLAUDE DRAFT — verify current Hyatt pricing tier for Paris-Vendôme post-2026 devaluation and a live cash comp.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — currently 35/40/45K but moving to the new Category 9; range widened to the upcoming tier top.",
+    verifiedAt: "2026-09-01",
     imageSlug: "paris",
     featured: false,
     notes: null,
@@ -89,8 +91,8 @@ export const hotelRedemptions = [
     origin: null,
     destination: "Kauai, Hawaii",
     cabin: null,
-    pointsMin: 25000,
-    pointsMax: 35000,
+    pointsMin: 35000,
+    pointsMax: 45000,
     taxesFeesCents: 0,
     cashFareCents: 95000,
     availabilityRating: "plan_ahead",
@@ -99,8 +101,8 @@ export const hotelRedemptions = [
     methodologyNote:
       "Cash rate benchmarked as a representative nightly rate incl. taxes and resort fee.",
     sourceNote:
-      "CLAUDE DRAFT — verify current category/peak points for Grand Hyatt Kauai and whether awards waive the resort fee.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — actually Category 8 (the draft used a category too low): 35–45K/night.",
+    verifiedAt: "2026-09-01",
     imageSlug: "kauai",
     featured: false,
     notes: null,
@@ -113,8 +115,8 @@ export const hotelRedemptions = [
     origin: null,
     destination: "Austin, Texas",
     cabin: null,
-    pointsMin: 45000,
-    pointsMax: 65000,
+    pointsMin: 40000,
+    pointsMax: 72000,
     taxesFeesCents: 0,
     cashFareCents: 200000,
     availabilityRating: "plan_ahead",
@@ -123,8 +125,8 @@ export const hotelRedemptions = [
     methodologyNote:
       "Cash rate benchmarked as a representative nightly all-inclusive rate incl. taxes.",
     sourceNote:
-      "CLAUDE DRAFT — verify current Miraval award pricing, inclusions, and minimum-stay rules.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — 40K single/off-peak up to 72K double/peak; includes a $175/person nightly credit.",
+    verifiedAt: "2026-09-01",
     imageSlug: "austin",
     featured: false,
     notes: null,
@@ -137,8 +139,8 @@ export const hotelRedemptions = [
     origin: null,
     destination: "Cancún, Mexico",
     cabin: null,
-    pointsMin: 25000,
-    pointsMax: 40000,
+    pointsMin: 20000,
+    pointsMax: 32000,
     taxesFeesCents: 0,
     cashFareCents: 85000,
     availabilityRating: "wide_open",
@@ -147,8 +149,8 @@ export const hotelRedemptions = [
     methodologyNote:
       "Cash rate benchmarked as a representative all-inclusive nightly rate for two, incl. taxes.",
     sourceNote:
-      "CLAUDE DRAFT — verify current all-inclusive award pricing tiers for Zilara Cancún (double-occupancy pricing rules changed before).",
-    verifiedAt: null,
+      "Verified 2026-09-01 — peak 24K with the five-tier Top at 32K; the draft range was too high.",
+    verifiedAt: "2026-09-01",
     imageSlug: "cancun",
     featured: false,
     notes: null,
@@ -163,8 +165,8 @@ export const hotelRedemptions = [
     origin: null,
     destination: "Maldives",
     cabin: null,
-    pointsMin: 120000,
-    pointsMax: 150000,
+    pointsMin: 160000,
+    pointsMax: 200000,
     taxesFeesCents: 0,
     cashFareCents: 220000,
     availabilityRating: "plan_ahead",
@@ -173,8 +175,8 @@ export const hotelRedemptions = [
     methodologyNote:
       "Cash rate benchmarked as a representative nightly rate incl. taxes/service; seaplane transfer excluded.",
     sourceNote:
-      "CLAUDE DRAFT — verify current dynamic award range for Conrad Maldives, 5th-night-free policy, and which room types are standard awards.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — 160K/night observed Mar 2026 after the Nov 2025 devaluation (partially walked back).",
+    verifiedAt: "2026-09-01",
     imageSlug: "maldives",
     featured: true,
     notes: null,
@@ -187,8 +189,8 @@ export const hotelRedemptions = [
     origin: null,
     destination: "Maldives",
     cabin: null,
-    pointsMin: 120000,
-    pointsMax: 150000,
+    pointsMin: 250000,
+    pointsMax: null,
     taxesFeesCents: 0,
     cashFareCents: 300000,
     availabilityRating: "hard_to_find",
@@ -197,8 +199,8 @@ export const hotelRedemptions = [
     methodologyNote:
       "Cash rate benchmarked as a representative nightly rate incl. taxes/service; transfers excluded.",
     sourceNote:
-      "CLAUDE DRAFT — verify the current dynamic award ceiling for Ithaafushi (Hilton has no hard award cap anymore) and live cash comps.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — prices at Hilton's 250K standard-room cap.",
+    verifiedAt: "2026-09-01",
     imageSlug: "maldives",
     featured: false,
     notes: null,
@@ -211,8 +213,8 @@ export const hotelRedemptions = [
     origin: null,
     destination: "Bora Bora, French Polynesia",
     cabin: null,
-    pointsMin: 120000,
-    pointsMax: 150000,
+    pointsMin: 130000,
+    pointsMax: 200000,
     taxesFeesCents: 0,
     cashFareCents: 160000,
     availabilityRating: "plan_ahead",
@@ -221,8 +223,8 @@ export const hotelRedemptions = [
     methodologyNote:
       "Cash rate benchmarked as a representative nightly rate incl. taxes/service.",
     sourceNote:
-      "CLAUDE DRAFT — verify whether overwater categories still book as standard awards and the current points range.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — 130K/night from mid-Mar 2026; post-devaluation spikes to 200K observed.",
+    verifiedAt: "2026-09-01",
     imageSlug: "bora-bora",
     featured: false,
     notes: null,
@@ -235,8 +237,8 @@ export const hotelRedemptions = [
     origin: null,
     destination: "Maui, Hawaii",
     cabin: null,
-    pointsMin: 95000,
-    pointsMax: 130000,
+    pointsMin: 110000,
+    pointsMax: 150000,
     taxesFeesCents: 0,
     cashFareCents: 110000,
     availabilityRating: "plan_ahead",
@@ -245,8 +247,8 @@ export const hotelRedemptions = [
     methodologyNote:
       "Cash rate benchmarked as a representative high-season nightly rate incl. taxes and resort fee.",
     sourceNote:
-      "CLAUDE DRAFT — verify the current dynamic points range for Grand Wailea and resort-fee treatment on awards.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — from ~110K/night, running higher post-devaluation.",
+    verifiedAt: "2026-09-01",
     imageSlug: "maui",
     featured: false,
     notes: null,
@@ -261,18 +263,18 @@ export const hotelRedemptions = [
     origin: null,
     destination: "Bora Bora, French Polynesia",
     cabin: null,
-    pointsMin: 100000,
-    pointsMax: 160000,
+    pointsMin: 70000,
+    pointsMax: 100000,
     taxesFeesCents: 0,
     cashFareCents: 200000,
     availabilityRating: "hard_to_find",
     bookingHint:
-      "The honeymoon-poster redemption: overwater villas from six figures of points per night.\n5th-night-free on awards; book 6–12 months out for dry season (May–October).\nTop up via Chase UR or Amex MR at 1:1.",
+      "The honeymoon-poster redemption: overwater villas from five figures of points per night.\n5th-night-free on awards; book 6–12 months out for dry season (May–October).\nTop up via Chase UR or Amex MR at 1:1.",
     methodologyNote:
       "Cash rate benchmarked as a representative nightly rate incl. taxes/service.",
     sourceNote:
-      "CLAUDE DRAFT — verify the current dynamic points range post-2026 Marriott devaluation (+5–10%) and standard-award villa categories.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — 70K off-peak / 85K standard / 100K high season; the draft range was too high.",
+    verifiedAt: "2026-09-01",
     imageSlug: "bora-bora",
     featured: true,
     notes: null,
@@ -286,7 +288,7 @@ export const hotelRedemptions = [
     destination: "Dubai, UAE",
     cabin: null,
     pointsMin: 85000,
-    pointsMax: 130000,
+    pointsMax: 120000,
     taxesFeesCents: 0,
     cashFareCents: 250000,
     availabilityRating: "hard_to_find",
@@ -295,8 +297,8 @@ export const hotelRedemptions = [
     methodologyNote:
       "Cash rate benchmarked as a representative all-inclusive nightly rate incl. taxes.",
     sourceNote:
-      "CLAUDE DRAFT — verify current points range and that award stays still include board and activities.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — 85–120K/night; all-inclusive board plus two daily activities confirmed.",
+    verifiedAt: "2026-09-01",
     imageSlug: "dubai",
     featured: false,
     notes: null,
@@ -319,7 +321,7 @@ export const hotelRedemptions = [
     methodologyNote:
       "Cash rate benchmarked as a representative nightly rate incl. taxes/service; seaplane transfer excluded.",
     sourceNote:
-      "CLAUDE DRAFT — verify current dynamic range post-2026 devaluation and which villa categories are standard awards.",
+      "DRAFT — no reliable current pricing found in the Sept 2026 research pass; needs a manual marriott.com check before verification.",
     verifiedAt: null,
     imageSlug: "maldives",
     featured: false,
@@ -343,8 +345,8 @@ export const hotelRedemptions = [
     methodologyNote:
       "Cash rate benchmarked as a representative high-season nightly rate incl. taxes/service.",
     sourceNote:
-      "CLAUDE DRAFT — verify current points range for RC Kyoto post-2026 devaluation and a live blossom-season cash comp.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — median ~110K/night; the drafted 80–130K range checks out.",
+    verifiedAt: "2026-09-01",
     imageSlug: "kyoto",
     featured: false,
     notes: null,
@@ -367,7 +369,7 @@ export const hotelRedemptions = [
     methodologyNote:
       "Cash rate benchmarked as a representative high-season nightly rate incl. taxes; city tax excluded.",
     sourceNote:
-      "CLAUDE DRAFT — verify current dynamic range for Gritti Palace and the city-tax amount charged on award stays.",
+      "DRAFT — only stale 2022-era data found in the Sept 2026 research pass; needs a manual marriott.com check before verification.",
     verifiedAt: null,
     imageSlug: "venice",
     featured: false,

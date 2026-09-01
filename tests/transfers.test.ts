@@ -8,12 +8,11 @@ import { applyPromoBonus, computePartnerPoints } from "../src/engine/transfers";
 // not inline fixtures — so a data-entry typo in a seed row (e.g. the Marriott
 // bonusBlockPoints) fails CI exactly like a math regression would (DATA-02).
 //
-// NOTE (Assumption A1): the Marriott increment of 3000 and the 59,000 → 19,000
-// expectation encode Assumption A1 — points floor to the 3000-point increment
-// before conversion, and only full 60K blocks earn the 5K bonus. This is the
-// frozen spec unless Nick's DATA-04 checkpoint (plan 02-05) states a different
-// increment rule, in which case the seed row AND these expectations change
-// together.
+// NOTE (Assumption A1 — CONFIRMED by Nick 2026-09-01 at the DATA-04
+// checkpoint): the Marriott increment of 3000 and the 59,000 → 19,000
+// expectation encode the confirmed rule — points floor to the 3000-point
+// increment before conversion, and only full 60K blocks earn the 5K bonus.
+// This is the frozen spec.
 
 function findRoute(from: string, to: string): TransferRouteSeed {
   const route = routes.find(
@@ -75,9 +74,9 @@ describe("applyPromoBonus (DATA-03 composition rule)", () => {
   });
 
   it("composes on the base-CONVERTED amount, never source points: 10,000 MR → 20,000 Hilton → 26,000", () => {
-    // A4: the promo multiplies the converted 20,000 Hilton points (→ 26,000),
-    // not the 10,000 source MR points. Structural block bonuses never stack
-    // with promo bonuses (pending Nick's DATA-04 confirmation).
+    // A4 (confirmed 2026-09-01): the promo multiplies the converted 20,000
+    // Hilton points (→ 26,000), not the 10,000 source MR points. Structural
+    // block bonuses never stack with promo bonuses.
     expect(applyPromoBonus(computePartnerPoints(mrToHilton, 10_000), 30)).toBe(
       26_000,
     );

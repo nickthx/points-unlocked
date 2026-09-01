@@ -1,14 +1,15 @@
 import type { RedemptionSeed } from "./types";
 
-// Flight redemption drafts — Asia-Pacific & Hawaii (DATA-01). Every entry is
-// a Claude draft: verifiedAt is null without exception, and sourceNote names
-// concretely what Nick must check against live 2026 sources (Pitfall 1:
-// training-lag makes drafted award prices stale by construction). Dynamic or
-// uncertain pricing uses pointsMin/pointsMax ranges; pointsMax: null is
-// reserved for genuinely fixed charts. Money is integer cents. Fare-benchmark
-// convention (methodologyNote) is provisional until Nick's sign-off (Pitfall 5).
-// Europe & Middle East flights live in redemptions-flights-europe.ts
-// (500-line rule); redemptions.ts concatenates both.
+// Flight redemptions — Asia-Pacific & Hawaii (DATA-01/DATA-04). All entries in
+// this file were verified by Nick on 2026-09-01 against live 2026 sources in a
+// joint research pass (see .planning/phases/02-redemption-database/
+// 02-05-corrections.md for the ruling log). sourceNote records the finding;
+// verifiedAt is the verification date. Dynamic or uncertain pricing uses
+// pointsMin/pointsMax ranges; pointsMax: null is reserved for genuinely fixed
+// charts. Money is integer cents. Fare-benchmark convention (confirmed
+// 2026-09-01): discounted realistic retail for economy/business, undiscounted
+// retail for First — see types.ts. Europe & Middle East flights live in
+// redemptions-flights-europe.ts (500-line rule); redemptions.ts concatenates.
 
 export const flightRedemptions = [
   {
@@ -20,7 +21,7 @@ export const flightRedemptions = [
     destination: "Tokyo (HND)",
     cabin: "business",
     pointsMin: 75000,
-    pointsMax: 100000,
+    pointsMax: 90000,
     taxesFeesCents: 60000,
     cashFareCents: 900000,
     availabilityRating: "hard_to_find",
@@ -29,8 +30,8 @@ export const flightRedemptions = [
     methodologyNote:
       "Cash fare benchmarked as a discounted retail round-trip business fare, not full-flex.",
     sourceNote:
-      "CLAUDE DRAFT — verify ANA's current round-trip business pricing NA↔Japan (chart changed in recent years) and fuel surcharge level; fare benchmark needs a Google Flights check.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — ANA 'The Room' round-trip NA–Japan runs 75–90K seasonal per ANA's current chart (2026).",
+    verifiedAt: "2026-09-01",
     imageSlug: "tokyo",
     featured: true,
     notes: "The flagship pitch redemption: ~90K Amex MR → Tokyo in business.",
@@ -43,7 +44,7 @@ export const flightRedemptions = [
     origin: "Los Angeles (LAX)",
     destination: "Tokyo (HND)",
     cabin: "first",
-    pointsMin: 85000,
+    pointsMin: 72500,
     pointsMax: null,
     taxesFeesCents: 40000,
     cashFareCents: 1400000,
@@ -53,8 +54,8 @@ export const flightRedemptions = [
     methodologyNote:
       "Cash fare benchmarked as a one-way retail first fare; F is rarely sold discounted.",
     sourceNote:
-      "CLAUDE DRAFT — verify Virgin's current ANA first-class award chart (rates increased post-2023; treat 85K one-way as unconfirmed) and whether one-ways are still bookable.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — Virgin→ANA F West Coast ~72.5K one-way (145K RT SFO ÷ 2, post-2023 chart). Caution: some sources quote 55K one-way; the conservative figure is used.",
+    verifiedAt: "2026-09-01",
     imageSlug: "tokyo",
     featured: true,
     notes: null,
@@ -67,7 +68,7 @@ export const flightRedemptions = [
     origin: "San Francisco (SFO)",
     destination: "Tokyo (NRT)",
     cabin: "business",
-    pointsMin: 47500,
+    pointsMin: 52500,
     pointsMax: null,
     taxesFeesCents: 35000,
     cashFareCents: 450000,
@@ -77,8 +78,8 @@ export const flightRedemptions = [
     methodologyNote:
       "Cash fare benchmarked as a discounted one-way retail business fare.",
     sourceNote:
-      "CLAUDE DRAFT — verify Virgin's current ANA business one-way rate (was 45–47.5K West Coast pre-2023 changes) and surcharge amount.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — Virgin→ANA business one-way is 52.5K West Coast / 60K East Coast on the post-2023 chart.",
+    verifiedAt: "2026-09-01",
     imageSlug: "tokyo",
     featured: false,
     notes: null,
@@ -101,8 +102,8 @@ export const flightRedemptions = [
     methodologyNote:
       "Cash fare benchmarked as a discounted one-way retail business fare.",
     sourceNote:
-      "CLAUDE DRAFT — verify Aeroplan's post-June-2026 Pacific zone pricing (devaluation +20–67% on partners) and the partner booking fee.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — 75K anchor held through the June 2026 Aeroplan devaluation (5,001–7,500 mi NA–Pacific fixed partner band); the 75–115K range remains realistic.",
+    verifiedAt: "2026-09-01",
     imageSlug: "tokyo",
     featured: false,
     notes: null,
@@ -115,18 +116,18 @@ export const flightRedemptions = [
     origin: "San Francisco (SFO)",
     destination: "Singapore (SIN)",
     cabin: "business",
-    pointsMin: 95000,
-    pointsMax: 115000,
+    pointsMin: 112500,
+    pointsMax: null,
     taxesFeesCents: 20000,
     cashFareCents: 650000,
     availabilityRating: "plan_ahead",
     bookingHint:
-      "One of the world's longest flights, ~17h in Singapore's business product.\nSaver space is decent outside holiday peaks; book on singaporeair.com.\nTransfer 1:1 from any of the five bank programs.",
+      "One of the world's longest flights, ~17h in Singapore's business product.\nSaver space is decent outside holiday peaks; book on singaporeair.com — Advantage-tier awards cost substantially more than Saver.\nTransfer 1:1 from any of the five bank programs.",
     methodologyNote:
       "Cash fare benchmarked as a discounted one-way retail business fare.",
     sourceNote:
-      "CLAUDE DRAFT — verify current KrisFlyer saver business pricing US West Coast–SIN against the live award chart.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — KrisFlyer Saver SFO–SIN one-way business = 112,500 miles on the fixed chart (Nov 2025).",
+    verifiedAt: "2026-09-01",
     imageSlug: "singapore",
     featured: false,
     notes: null,
@@ -139,8 +140,8 @@ export const flightRedemptions = [
     origin: "Los Angeles (LAX)",
     destination: "Hong Kong (HKG)",
     cabin: "business",
-    pointsMin: 70000,
-    pointsMax: 85000,
+    pointsMin: 88000,
+    pointsMax: null,
     taxesFeesCents: 20000,
     cashFareCents: 500000,
     availabilityRating: "plan_ahead",
@@ -149,8 +150,8 @@ export const flightRedemptions = [
     methodologyNote:
       "Cash fare benchmarked as a discounted one-way retail business fare.",
     sourceNote:
-      "CLAUDE DRAFT — verify current Asia Miles distance-band pricing LAX–HKG business and fee levels.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — Asia Miles May 2026 chart: West Coast–HKG business = 88K one-way (~$112 in fees).",
+    verifiedAt: "2026-09-01",
     imageSlug: "hong-kong",
     featured: false,
     notes: null,
@@ -163,8 +164,8 @@ export const flightRedemptions = [
     origin: "New York (JFK)",
     destination: "Hong Kong (HKG)",
     cabin: "first",
-    pointsMin: 110000,
-    pointsMax: 125000,
+    pointsMin: 160000,
+    pointsMax: null,
     taxesFeesCents: 25000,
     cashFareCents: 1600000,
     availabilityRating: "hard_to_find",
@@ -173,8 +174,8 @@ export const flightRedemptions = [
     methodologyNote:
       "Cash fare benchmarked as a one-way retail first fare.",
     sourceNote:
-      "CLAUDE DRAFT — verify current Asia Miles first pricing JFK–HKG and whether CX still flies F on the route.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — Asia Miles May 2026 chart: JFK–HKG first = 160K one-way; Cathay still flies F on the route.",
+    verifiedAt: "2026-09-01",
     imageSlug: "hong-kong",
     featured: false,
     notes: null,
@@ -187,18 +188,18 @@ export const flightRedemptions = [
     origin: "US mainland (any United gateway)",
     destination: "Honolulu (HNL)",
     cabin: "economy",
-    pointsMin: 15000,
-    pointsMax: 25000,
+    pointsMin: 25000,
+    pointsMax: null,
     taxesFeesCents: 1200,
-    cashFareCents: 45000,
+    cashFareCents: 25000,
     availabilityRating: "plan_ahead",
     bookingHint:
       "The classic small-balance sweet spot: United-operated Hawaii flights priced off Turkish's partner chart.\nFind United saver space first, then book through Miles&Smiles (online or by email/phone).\nTransfer 1:1 from Capital One or Citi.",
     methodologyNote:
-      "Cash fare benchmarked as a round-trip main-cabin economy fare.",
+      "Cash fare benchmarked as a one-way main-cabin economy fare.",
     sourceNote:
-      "CLAUDE DRAFT — verify Turkish's current domestic-US/Hawaii partner pricing (post-2025 changes; the old 7.5K one-way is gone) and the booking process.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — Dec 2025 Miles&Smiles devaluation set mainland–Hawaii at 25K economy one-way (was 15K); cash benchmark switched to a one-way fare to match.",
+    verifiedAt: "2026-09-01",
     imageSlug: "hawaii",
     featured: false,
     notes: null,
@@ -211,8 +212,8 @@ export const flightRedemptions = [
     origin: "Seattle (SEA)",
     destination: "Honolulu (HNL)",
     cabin: "economy",
-    pointsMin: 13000,
-    pointsMax: 16000,
+    pointsMin: 16000,
+    pointsMax: 20000,
     taxesFeesCents: 600,
     cashFareCents: 40000,
     availabilityRating: "plan_ahead",
@@ -221,34 +222,35 @@ export const flightRedemptions = [
     methodologyNote:
       "Cash fare benchmarked as a one-way main-cabin economy fare.",
     sourceNote:
-      "CLAUDE DRAFT — verify current Avios partner pricing for the SEA–HNL distance band and Alaska award availability via BA.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — still bookable on ba.com; ≤3,000-mile AA/AS partner pricing (July 2024) puts SEA–HNL at ~16K one-way, with no published chart and up to ~20K observed.",
+    verifiedAt: "2026-09-01",
     imageSlug: "hawaii",
     featured: false,
     notes: null,
   },
   {
-    slug: "jal-first-tokyo-via-alaska",
+    slug: "jal-business-tokyo-via-alaska",
     partnerProgramSlug: "alaska-mileage-plan",
-    title: "Japan Airlines First Class to Tokyo via Alaska",
+    title: "Japan Airlines business class to Tokyo via Alaska",
     category: "flight",
     origin: "Los Angeles (LAX)",
     destination: "Tokyo (HND)",
-    cabin: "first",
-    pointsMin: 80000,
-    pointsMax: 140000,
+    cabin: "business",
+    pointsMin: 60000,
+    pointsMax: null,
     taxesFeesCents: 5000,
-    cashFareCents: 1500000,
+    cashFareCents: 450000,
     availabilityRating: "hard_to_find",
     bookingHint:
-      "JAL F with Alaska miles is a legendary sweet spot when space appears.\nSearch on alaskaair.com; JAL releases F sparingly and close-in.\nTransfer 1:1 from Bilt (the only bank path to Alaska), or 3:1 from Marriott.",
+      "JAL business with Alaska's Atmos Rewards miles is a standout sweet spot when space appears.\nSearch on alaskaair.com; JAL releases premium space sparingly and close-in.\nTransfer 1:1 from Bilt (the only bank path to Alaska), or 3:1 from Marriott.",
     methodologyNote:
-      "Cash fare benchmarked as a one-way retail first fare.",
+      "Cash fare benchmarked as a discounted one-way retail business fare.",
     sourceNote:
-      "CLAUDE DRAFT — verify Alaska's current JAL first pricing (award chart changes post-2024) and that JAL F remains bookable via Alaska in 2026.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — Alaska Atmos Rewards (ex-Mileage Plan, Aug 2025 rebrand) prices JAL business at 60K one-way US–Tokyo; JAL First is NOT bookable via Alaska.",
+    verifiedAt: "2026-09-01",
     imageSlug: "tokyo",
     featured: true,
-    notes: null,
+    notes:
+      "Reworked from a JAL First draft: JAL F is no longer bookable with Alaska miles, so the business-class redemption is the real play.",
   },
 ] satisfies RedemptionSeed[];

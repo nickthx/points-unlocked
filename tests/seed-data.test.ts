@@ -154,9 +154,43 @@ describe("transfer bonuses (DATA-03)", () => {
 });
 
 describe("provenance (DATA-04 automated portion)", () => {
-  // NOTE: the ≥30-verified coverage assertion is deliberately NOT here —
-  // drafts are all verifiedAt: null by design and this suite must stay green;
-  // that assertion is added at the verification gate in plan 02-05.
+  // Coverage gate (activated at the plan 02-05 verification gate): Nick's
+  // 2026-09-01 pass verified 34 of 36 entries; this floor makes any
+  // verification-coverage regression fail CI.
+  it("has ≥30 verified entries covering all 8 enterable programs", () => {
+    const verified = redemptions.filter((r) => r.verifiedAt !== null);
+    expect(verified.length).toBeGreaterThanOrEqual(30);
+    for (const p of programs.filter((pr) => pr.isUserEnterable)) {
+      const reachable = verified.some(
+        (r) =>
+          // direct-use (Hyatt/Hilton/Marriott)
+          r.partnerProgramSlug === p.slug ||
+          // via an active transfer route from the program
+          routes.some(
+            (rt) =>
+              rt.fromProgramSlug === p.slug &&
+              rt.active &&
+              rt.toProgramSlug === r.partnerProgramSlug,
+          ),
+      );
+      expect(reachable, `${p.slug} has no verified redemption`).toBe(true);
+    }
+  });
+
+  it("every verified entry's sourceNote records the verification finding", () => {
+    for (const rd of redemptions) {
+      if (rd.verifiedAt !== null) {
+        expect(
+          rd.sourceNote.startsWith("Verified "),
+          `${rd.slug} is marked verified but its sourceNote does not record the finding`,
+        ).toBe(true);
+        expect(
+          rd.sourceNote.includes("CLAUDE DRAFT"),
+          `${rd.slug} is marked verified but still carries a draft sourceNote`,
+        ).toBe(false);
+      }
+    }
+  });
 
   it("every redemption has a non-empty sourceNote", () => {
     for (const rd of redemptions) {

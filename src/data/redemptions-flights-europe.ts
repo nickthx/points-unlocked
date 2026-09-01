@@ -1,10 +1,13 @@
 import type { RedemptionSeed } from "./types";
 
-// Flight redemption drafts — Europe & Middle East (DATA-01). Split from
-// redemptions-flights.ts to honor the 500-line rule; same draft rules apply:
-// verifiedAt: null without exception, sourceNote names what Nick must verify,
-// dynamic pricing uses ranges, money is integer cents, and the fare-benchmark
-// convention in methodologyNote is provisional until Nick's sign-off.
+// Flight redemptions — Europe & Middle East (DATA-01/DATA-04). Split from
+// redemptions-flights.ts to honor the 500-line rule. All entries in this file
+// were verified by Nick on 2026-09-01 against live 2026 sources (ruling log:
+// .planning/phases/02-redemption-database/02-05-corrections.md). sourceNote
+// records the finding; verifiedAt is the verification date. Dynamic pricing
+// uses ranges, money is integer cents, and the fare-benchmark convention
+// (confirmed 2026-09-01) is: discounted realistic retail for economy/business,
+// undiscounted retail for First — see types.ts.
 
 export const flightRedemptionsEurope = [
   {
@@ -16,8 +19,8 @@ export const flightRedemptionsEurope = [
     destination: "London (LHR)",
     cabin: "business",
     pointsMin: 29000,
-    pointsMax: 47500,
-    taxesFeesCents: 60000,
+    pointsMax: 60000,
+    taxesFeesCents: 97500,
     cashFareCents: 350000,
     availabilityRating: "plan_ahead",
     bookingHint:
@@ -25,8 +28,8 @@ export const flightRedemptionsEurope = [
     methodologyNote:
       "Cash fare benchmarked as a discounted one-way retail business fare; surcharges shown separately in taxesFeesCents.",
     sourceNote:
-      "CLAUDE DRAFT — verify current Virgin peak/off-peak Upper Class pricing JFK–LHR and exact surcharge total (often $500+ one-way).",
-    verifiedAt: null,
+      "Verified 2026-09-01 — dynamic pricing since Oct 2024, off-peak from ~29K; Upper Class surcharge ~£720 (~$975) one-way JFK–LHR.",
+    verifiedAt: "2026-09-01",
     imageSlug: "london",
     featured: false,
     notes: null,
@@ -39,8 +42,8 @@ export const flightRedemptionsEurope = [
     origin: "New York (JFK)",
     destination: "London (LHR)",
     cabin: "business",
-    pointsMin: 50000,
-    pointsMax: 60000,
+    pointsMin: 47500,
+    pointsMax: 50000,
     taxesFeesCents: 25000,
     cashFareCents: 400000,
     availabilityRating: "plan_ahead",
@@ -49,8 +52,8 @@ export const flightRedemptionsEurope = [
     methodologyNote:
       "Cash fare benchmarked as a discounted one-way retail business fare.",
     sourceNote:
-      "CLAUDE DRAFT — verify Virgin's current Delta One partner chart (50K transatlantic has crept up before) and that JFK–LHR is still flat-priced.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — Virgin flat-prices Delta One transatlantic at 50K one-way (47.5K off-peak UK→US East).",
+    verifiedAt: "2026-09-01",
     imageSlug: "london",
     featured: false,
     notes: null,
@@ -63,18 +66,18 @@ export const flightRedemptionsEurope = [
     origin: "New York (JFK)",
     destination: "Paris (CDG)",
     cabin: "business",
-    pointsMin: 50000,
-    pointsMax: 70000,
-    taxesFeesCents: 25000,
+    pointsMin: 60000,
+    pointsMax: 75000,
+    taxesFeesCents: 60000,
     cashFareCents: 320000,
     availabilityRating: "plan_ahead",
     bookingHint:
-      "Flying Blue prices dynamically — check monthly Promo Rewards for 25–50% off.\nTransfer 1:1 from any of the five bank programs (rare universal partner).\nBook on flyingblue.com; space to Paris is among the best transatlantic.",
+      "Flying Blue's three-tier awards: Light fares are cheapest but skip lounge access and allow no changes — Standard is the safer pick.\nWatch monthly Promo Rewards for discounts to ~45K.\nTransfer 1:1 from any of the five bank programs (rare universal partner); book on flyingblue.com.",
     methodologyNote:
       "Cash fare benchmarked as a discounted one-way retail business fare.",
     sourceNote:
-      "CLAUDE DRAFT — verify current Flying Blue dynamic range JFK–CDG business and surcharge level; check live Promo Rewards for a better anchor.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — Sept 8 2026 three-tier chart: Light 60K / Standard 75K / Flex 110K one-way JFK–CDG business, ~$600 fees; promos dip to 45K.",
+    verifiedAt: "2026-09-01",
     imageSlug: "paris",
     featured: false,
     notes: null,
@@ -97,8 +100,8 @@ export const flightRedemptionsEurope = [
     methodologyNote:
       "Cash fare benchmarked as a discounted one-way retail business fare.",
     sourceNote:
-      "CLAUDE DRAFT — verify United's current saver-level transatlantic business pricing (dynamic; ranges shift) via a live united.com search.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — dynamic pricing; saver ~60K EWR–FRA confirmed realistic in 2026 searches.",
+    verifiedAt: "2026-09-01",
     imageSlug: "frankfurt",
     featured: false,
     notes: null,
@@ -111,9 +114,9 @@ export const flightRedemptionsEurope = [
     origin: "New York (JFK)",
     destination: "Frankfurt (FRA)",
     cabin: "first",
-    pointsMin: 100000,
-    pointsMax: 160000,
-    taxesFeesCents: 55000,
+    pointsMin: 90000,
+    pointsMax: null,
+    taxesFeesCents: 20000,
     cashFareCents: 1100000,
     availabilityRating: "hard_to_find",
     bookingHint:
@@ -121,35 +124,37 @@ export const flightRedemptionsEurope = [
     methodologyNote:
       "Cash fare benchmarked as a one-way retail first fare; F is rarely discounted.",
     sourceNote:
-      "CLAUDE DRAFT — verify Aeroplan's post-June-2026 partner pricing for LH First (devaluation raised partner rates 20–67%) and current surcharge treatment.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — JFK–FRA sits in the <4,000-mile band at 90K flat, spared by the June 2026 Aeroplan devaluation; Aeroplan adds no YQ (~$200 taxes).",
+    verifiedAt: "2026-09-01",
     imageSlug: "frankfurt",
     featured: false,
-    notes: null,
+    notes:
+      "CAVEAT: the A340 fleet retires Oct 2026 and Allegris First is not partner-bookable — this availability window is closing.",
   },
   {
-    slug: "singapore-suites-frankfurt",
+    slug: "singapore-first-777-frankfurt",
     partnerProgramSlug: "singapore-krisflyer",
-    title: "Singapore Airlines Suites (A380) to Frankfurt",
+    title: "Singapore Airlines First Class (777) to Frankfurt",
     category: "flight",
     origin: "New York (JFK)",
     destination: "Frankfurt (FRA)",
     cabin: "first",
-    pointsMin: 86000,
-    pointsMax: 120000,
+    pointsMin: 156000,
+    pointsMax: null,
     taxesFeesCents: 25000,
     cashFareCents: 1400000,
     availabilityRating: "hard_to_find",
     bookingHint:
-      "Suites on the JFK–FRA fifth-freedom A380 is one of the most attainable F products.\nBook saver space on singaporeair.com; waitlist often clears.\nTransfer 1:1 from any of the five bank programs; allow a day for transfers.",
+      "Singapore's 777-300ER First on the JFK–FRA fifth-freedom route — a top-tier F product bookable with points.\nBook saver space on singaporeair.com; waitlist often clears.\nTransfer 1:1 from any of the five bank programs; allow a day for transfers.",
     methodologyNote:
-      "Cash fare benchmarked as a one-way retail first/suites fare.",
+      "Cash fare benchmarked as a one-way retail first fare.",
     sourceNote:
-      "CLAUDE DRAFT — verify current KrisFlyer saver vs advantage Suites pricing JFK–FRA (chart revisions periodically) and that the A380 still serves the route.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — KrisFlyer 777 First JFK–FRA = 156K one-way; the A380 Suites left the route in March 2026.",
+    verifiedAt: "2026-09-01",
     imageSlug: "frankfurt",
     featured: true,
-    notes: null,
+    notes:
+      "Reworked from an A380 Suites draft: the A380 no longer serves JFK–FRA, so this is the 777-300ER First product.",
   },
   {
     slug: "emirates-first-dubai",
@@ -160,8 +165,8 @@ export const flightRedemptionsEurope = [
     destination: "Dubai (DXB)",
     cabin: "first",
     pointsMin: 136000,
-    pointsMax: 180000,
-    taxesFeesCents: 60000,
+    pointsMax: 188000,
+    taxesFeesCents: 100000,
     cashFareCents: 1800000,
     availabilityRating: "hard_to_find",
     bookingHint:
@@ -169,8 +174,8 @@ export const flightRedemptionsEurope = [
     methodologyNote:
       "Cash fare benchmarked as a one-way retail first fare; Emirates F is rarely discounted.",
     sourceNote:
-      "CLAUDE DRAFT — verify current Skywards Saver/Flex first pricing JFK–DXB and the surcharge total (historically high).",
-    verifiedAt: null,
+      "Verified 2026-09-01 — May 2026 Skywards devaluation: JFK–DXB First saver ~188K (zone rates from 136K); surcharges run ~$1,000 per leg.",
+    verifiedAt: "2026-09-01",
     imageSlug: "dubai",
     featured: true,
     notes: null,
@@ -183,9 +188,9 @@ export const flightRedemptionsEurope = [
     origin: "New York (JFK)",
     destination: "Istanbul (IST)",
     cabin: "business",
-    pointsMin: 45000,
-    pointsMax: 55000,
-    taxesFeesCents: 35000,
+    pointsMin: 65000,
+    pointsMax: null,
+    taxesFeesCents: 22000,
     cashFareCents: 380000,
     availabilityRating: "plan_ahead",
     bookingHint:
@@ -193,8 +198,8 @@ export const flightRedemptionsEurope = [
     methodologyNote:
       "Cash fare benchmarked as a discounted one-way retail business fare.",
     sourceNote:
-      "CLAUDE DRAFT — verify current Miles&Smiles US–IST business pricing (2025 changes raised rates) and surcharge total.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — US–IST business = 65K one-way + ~$218.50 in fees; business award space wide open Aug 2026–Feb 2027.",
+    verifiedAt: "2026-09-01",
     imageSlug: "istanbul",
     featured: false,
     notes: null,
@@ -208,8 +213,8 @@ export const flightRedemptionsEurope = [
     destination: "Doha (DOH)",
     cabin: "business",
     pointsMin: 70000,
-    pointsMax: 90000,
-    taxesFeesCents: 30000,
+    pointsMax: null,
+    taxesFeesCents: 23500,
     cashFareCents: 700000,
     availabilityRating: "plan_ahead",
     bookingHint:
@@ -217,8 +222,8 @@ export const flightRedemptionsEurope = [
     methodologyNote:
       "Cash fare benchmarked as a discounted one-way retail business fare.",
     sourceNote:
-      "CLAUDE DRAFT — verify current Avios (BA vs Qatar) pricing JFK–DOH in Qsuites and fee difference between the two Avios wallets.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — 70K one-way in both Avios wallets; BA adds ~$235 in fees vs ~$60 via the Qatar wallet.",
+    verifiedAt: "2026-09-01",
     imageSlug: "doha",
     featured: false,
     notes: null,
@@ -231,8 +236,8 @@ export const flightRedemptionsEurope = [
     origin: "New York (JFK)",
     destination: "Frankfurt (FRA)",
     cabin: "business",
-    pointsMin: 63000,
-    pointsMax: 70000,
+    pointsMin: 70000,
+    pointsMax: 80000,
     taxesFeesCents: 5000,
     cashFareCents: 350000,
     availabilityRating: "plan_ahead",
@@ -241,8 +246,8 @@ export const flightRedemptionsEurope = [
     methodologyNote:
       "Cash fare benchmarked as a discounted one-way retail business fare.",
     sourceNote:
-      "CLAUDE DRAFT — verify current LifeMiles NA–Europe business pricing (dynamic-ish since 2023 changes) and the no-surcharge policy.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — 2026 NA–Europe business runs 70–80K (East Coast 80K); zero-surcharge policy confirmed.",
+    verifiedAt: "2026-09-01",
     imageSlug: "frankfurt",
     featured: false,
     notes: null,
@@ -265,8 +270,8 @@ export const flightRedemptionsEurope = [
     methodologyNote:
       "Cash fare benchmarked as a discounted one-way retail business fare; dynamic award range reflects observed lows/highs, not a chart.",
     sourceNote:
-      "CLAUDE DRAFT — verify a realistic current SkyMiles range for JFK–AMS Delta One via live searches; flag if flash-sale lows differ materially.",
-    verifiedAt: null,
+      "Verified 2026-09-01 — the 100–220K observed dynamic range is honest; no published chart exists.",
+    verifiedAt: "2026-09-01",
     imageSlug: "amsterdam",
     featured: false,
     notes: "Included honestly: SkyMiles is often the weakest transfer value — the delta view should show that.",
