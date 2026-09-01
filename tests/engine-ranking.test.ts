@@ -206,3 +206,140 @@ describe("rankRedemptions result fields", () => {
     expect(jal.wowDeltaCents.atMax).toBeNull();
   });
 });
+
+describe("VAL-05 end-to-end: the live Amex→Hilton bonus auto-adjusts everything", () => {
+  it("inside the window the bonus lowers requiredSourcePoints, raises effectiveCppX100, and surfaces on the result; after endDate it vanishes", () => {
+    // Same input, two asOf dates straddling the promo's 2026-10-14 endDate —
+    // asserted by DIRECT comparison of the two calls (VAL-05).
+    const during = mustFind(
+      rank({ "amex-mr": 120_000 }, "2026-09-15").bookableNow,
+      "conrad-maldives",
+    );
+    const after = mustFind(
+      rank({ "amex-mr": 120_000 }, "2026-10-15").bookableNow,
+      "conrad-maldives",
+    );
+
+    // Bonus surfaced ↔ absent.
+    expect(during.chosenPath.activeBonus).not.toBeNull();
+    expect(during.chosenPath.activeBonus!.bonusPercent).toBe(30);
+    expect(after.chosenPath.activeBonus).toBeNull();
+
+    // Lower source cost during the promo.
+    expect(during.chosenPath.requiredSourcePoints).toBeLessThan(
+      after.chosenPath.requiredSourcePoints,
+    );
+    expect(during.chosenPath.requiredSourcePoints).toBe(77_000);
+    expect(after.chosenPath.requiredSourcePoints).toBe(100_000);
+
+    // Higher per-source-point value during the promo (conservative end).
+    expect(during.effectiveCppX100.atMax!).toBeGreaterThan(
+      after.effectiveCppX100.atMax!,
+    );
+    expect(during.effectiveCppX100.atMax).toBe(286); // 22,000,000 / 77,000
+    expect(after.effectiveCppX100.atMax).toBe(220); // 22,000,000 / 100,000
+
+    // Partner-point cpp is redemption-intrinsic — identical in both calls.
+    expect(during.cppX100).toEqual(after.cppX100);
+  });
+});
+
+// 5,000,000 points in every enterable program — makes every reachable
+// redemption bookable, so anything absent is absent by RULE, not by balance.
+const maxBalances: Balances = {
+  "chase-ur": 5_000_000,
+  "amex-mr": 5_000_000,
+  "capital-one": 5_000_000,
+  "citi-ty": 5_000_000,
+  bilt: 5_000_000,
+  "world-of-hyatt": 5_000_000,
+  "hilton-honors": 5_000_000,
+  "marriott-bonvoy": 5_000_000,
+};
+
+describe("draft exclusion (A5 fail-closed, T-03-10)", () => {
+  it("the two known verifiedAt:null drafts never appear in any partition, even with max balances everywhere", () => {
+    const { bookableNow, almostThere } = rank(maxBalances);
+    for (const draftSlug of ["st-regis-maldives", "gritti-palace-venice"]) {
+      expect(
+        findIn(bookableNow, draftSlug),
+        `draft "${draftSlug}" (verifiedAt: null) must never reach bookableNow`,
+      ).toBeUndefined();
+      expect(
+        findIn(almostThere, draftSlug),
+        `draft "${draftSlug}" (verifiedAt: null) must never reach almostThere`,
+      ).toBeUndefined();
+    }
+  });
+});
+
+describe("hostile balances (Pitfall 6, T-03-09)", () => {
+  it("empty balances produce empty partitions", () => {
+    const { bookableNow, almostThere } = rank({});
+    expect(bookableNow).toEqual([]);
+    expect(almostThere).toEqual([]);
+  });
+
+  it("negative, NaN, Infinity, and zero balances are all treated as absent", () => {
+    const hostileValues = [-5, Number.NaN, Number.POSITIVE_INFINITY, 0];
+    for (const value of hostileValues) {
+      const { bookableNow, almostThere } = rank({ "chase-ur": value });
+      expect(
+        bookableNow,
+        `chase-ur balance ${value} must not produce bookableNow results`,
+      ).toEqual([]);
+      expect(
+        almostThere,
+        `chase-ur balance ${value} must not produce almostThere results`,
+      ).toEqual([]);
+    }
+  });
+
+  it("a huge (but safe-integer) 5,000,000 balance produces results with no NaN/Infinity anywhere", () => {
+    const { bookableNow, almostThere } = rank({ "chase-ur": 5_000_000 });
+    expect(bookableNow.length).toBeGreaterThan(0);
+    for (const result of [...bookableNow, ...almostThere]) {
+      const slug = result.redemption.slug;
+      const numericFields: [string, number | null][] = [
+        ["cppX100.atMin", result.cppX100.atMin],
+        ["cppX100.atMax", result.cppX100.atMax],
+        ["effectiveCppX100.atMin", result.effectiveCppX100.atMin],
+        ["effectiveCppX100.atMax", result.effectiveCppX100.atMax],
+        ["wowDeltaCents.atMin", result.wowDeltaCents.atMin],
+        ["wowDeltaCents.atMax", result.wowDeltaCents.atMax],
+        ["coverage", result.coverage],
+        ["chosenPath.requiredSourcePoints", result.chosenPath.requiredSourcePoints],
+        ["pointsAway", result.pointsAway],
+      ];
+      for (const [name, value] of numericFields) {
+        if (value !== null) {
+          expect(
+            Number.isFinite(value),
+            `"${slug}" ${name} must be finite, got ${value}`,
+          ).toBe(true);
+        }
+      }
+    }
+  });
+});
+
+describe("availabilityRating passthrough", () => {
+  it("every returned result carries one of the three known availability ratings", () => {
+    const validRatings = ["wide_open", "plan_ahead", "hard_to_find"];
+    const { bookableNow, almostThere } = rank(maxBalances);
+    for (const result of [...bookableNow, ...almostThere]) {
+      expect(
+        validRatings,
+        `"${result.redemption.slug}" must pass through a known availabilityRating, got "${result.redemption.availabilityRating}"`,
+      ).toContain(result.redemption.availabilityRating);
+    }
+  });
+});
+
+describe("determinism (T-03-11: purity in behavior, not just imports)", () => {
+  it("two identical rankRedemptions calls produce deeply equal output", () => {
+    const first = rank(maxBalances, "2026-09-15");
+    const second = rank(maxBalances, "2026-09-15");
+    expect(first).toEqual(second);
+  });
+});
