@@ -459,16 +459,20 @@ it("has ≥30 verified entries covering all 8 enterable programs", () => {
 | A5 | 2026 partner lists for the 8 programs (which airlines/hotels each reaches) | Seed drafting | Wrong routes in drafts — caught by the DATA-04 verification gate by design; drafts never ship |
 | A6 | `db.batch()` on neon-http executes as a single atomic unit | Pattern 4 | Partial seed on mid-batch failure — mitigated because re-running converges; fallback to sequential awaits documented |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Homepage status line replacement** — swap the `healthCheck` query for a verified-redemptions count (recommended: better proof-of-life, retires the placeholder) or keep `health_check` alongside the new tables (minimal churn)?
    - What we know: something MUST change in `page.tsx` or the build breaks.
    - Recommendation: planner picks the count-query option unless keeping Phase 2 diff minimal matters more.
+   - RESOLVED: count-query option adopted — 02-01 Task 1 replaces the `healthCheck` query with a verified-redemptions count.
 2. **Promo-bonus × structural-bonus stacking** — if a promotional bonus ever appeared on a route that also has a block bonus, which does it apply to?
    - What we know: no such route is known to exist today (Marriott outbound promos are rare/nonexistent).
    - Recommendation: implement A4's rule, document it in `src/data/types.ts`, ask Nick at the checkpoint; do not build configurability for a hypothetical.
+   - RESOLVED: A4 rule implemented and documented in `src/data/types.ts` (02-03), routed to Nick's verification checkpoint (02-05); no configurability built for the hypothetical.
 3. **Exact 59K-Marriott expected value** (increment-dependent, see A1) — lock with Nick before the test is written, or write the test from whatever rule Nick states and treat that as the frozen spec.
+   - RESOLVED: frozen-spec approach — A1's rule is encoded in the tests (02-03 Task 1) and updatable at the 02-05 verification checkpoint if Nick states a different rule.
 4. **Where the first 30 entries concentrate** — coverage rule says every program × common balance band should match something (PITFALLS: each of 8 programs ≥2 matches at a 60K balance is the later "looks done" bar). Entry selection is Nick's call during the collaboration; the coverage test enforces the floor (≥30 verified, all 8 reachable).
+   - RESOLVED: routed to Nick's checkpoint as planned — entry concentration stays Nick's call; the coverage floor (≥30 verified, all 8 programs reachable) is CI-enforced (02-04, activated in 02-05).
 
 ## Environment Availability
 
