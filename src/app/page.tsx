@@ -1,4 +1,6 @@
-import { db, healthCheck } from "@/db";
+import { count, isNotNull } from "drizzle-orm";
+
+import { db, redemptions } from "@/db";
 
 // Phase 1 placeholder: force-dynamic proves the live DB path on every request
 // (D-16). Phase 2+ moves to cached reads per ARCHITECTURE.md.
@@ -10,10 +12,11 @@ export const dynamic = "force-dynamic";
 export default async function Home() {
   let dbStatus = "infrastructure: warming up";
   try {
-    const rows = await db.select().from(healthCheck).limit(1);
-    if (rows.length > 0) {
-      dbStatus = "infrastructure: live";
-    }
+    const [row] = await db
+      .select({ n: count() })
+      .from(redemptions)
+      .where(isNotNull(redemptions.verifiedAt));
+    dbStatus = `${row.n} verified redemptions live`;
   } catch {
     // T-01-07: never render the caught error — it can embed connection details.
     // Neutral fallback set above.

@@ -1,5 +1,6 @@
-// Round-trip proof against Neon: insert one health_check row, select rows back.
-// Prints ONLY row count + status (T-01-08: connection string is never echoed).
+// Read-only connectivity proof against Neon: count rows in the curated
+// programs table. Prints ONLY the row count (T-01-08: connection string is
+// never echoed). Curated tables have no writer besides the seed script.
 // Run with: npx tsx scripts/db-check.ts
 
 // Guarded local env load (Node 22 built-in) — absent on CI/Vercel where env is set.
@@ -16,17 +17,14 @@ async function main(): Promise<void> {
   }
 
   // Import after env load so src/db/index.ts sees DATABASE_URL.
-  const { db, healthCheck } = await import("../src/db");
+  const [{ db, programs }, { count }] = await Promise.all([
+    import("../src/db"),
+    import("drizzle-orm"),
+  ]);
 
-  await db.insert(healthCheck).values({ status: "ok" });
-  const rows = await db.select().from(healthCheck);
+  const [row] = await db.select({ n: count() }).from(programs);
 
-  if (rows.length < 1) {
-    console.error("health_check round trip failed: no rows returned");
-    process.exit(1);
-  }
-
-  console.log(`health_check rows: ${rows.length}, latest status: ${rows[rows.length - 1].status}`);
+  console.log(`programs rows: ${row.n}`);
   process.exit(0);
 }
 

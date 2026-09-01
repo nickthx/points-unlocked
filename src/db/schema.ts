@@ -1,11 +1,123 @@
-import { pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  date,
+  foreignKey,
+  integer,
+  pgEnum,
+  pgTable,
+  primaryKey,
+  serial,
+  text,
+} from "drizzle-orm/pg-core";
 
-// D-16 placeholder: proves the full schema.ts → drizzle-kit push → Neon path.
-// Phase 2 replaces this with the real schema (programs, transfer_routes,
-// transfer_bonuses, redemptions per ARCHITECTURE.md) — per D-16 we do NOT
-// stub real table names now.
-export const healthCheck = pgTable("health_check", {
-  id: serial("id").primaryKey(),
-  status: text("status").notNull().default("ok"),
-  checkedAt: timestamp("checked_at").defaultNow(),
+// D-16 fulfilled: the Phase 1 health_check placeholder is replaced by the four
+// real curated tables (programs, transfer_routes, transfer_bonuses, redemptions).
+// Integer-only quantities everywhere — money in cents, cpp x100, transfer
+// ratios as numerator/denominator — no floats, no numeric (Pitfall 2: float
+// ratios fail Marriott math and compose wrong with bonuses). Derived values
+// (cpp, wow delta) are never persisted; the engine computes them.
+
+export const programKind = pgEnum("program_kind", ["bank", "airline", "hotel"]);
+
+export const availabilityRating = pgEnum("availability_rating", [
+  "wide_open",
+  "plan_ahead",
+  "hard_to_find",
+]);
+
+export const redemptionCategory = pgEnum("redemption_category", [
+  "flight",
+  "hotel",
+  "other",
+]);
+
+export const programs = pgTable("programs", {
+  // Natural key: kebab-case slug ("chase-ur", "world-of-hyatt", "ana-mileage-club").
+  slug: text("slug").primaryKey(),
+  name: text("name").notNull(),
+  kind: programKind("kind").notNull(),
+  // True for exactly the user-enterable currencies (balance-entry form).
+  isUserEnterable: boolean("is_user_enterable").notNull().default(false),
+  // 100 = 1.0 cents/pt; null for partner-only programs with no cash-out path.
+  cashOutBaselineCppX100: integer("cash_out_baseline_cpp_x100"),
+});
+
+export const transferRoutes = pgTable(
+  "transfer_routes",
+  {
+    fromProgramSlug: text("from_program_slug")
+      .notNull()
+      .references(() => programs.slug),
+    toProgramSlug: text("to_program_slug")
+      .notNull()
+      .references(() => programs.slug),
+    // Ratio = ratioNumerator partner units per ratioDenominator source points
+    // (Marriott→air: 1/3; MR→Hilton: 2/1; Bilt→air: 1/1).
+    ratioNumerator: integer("ratio_numerator").notNull(),
+    ratioDenominator: integer("ratio_denominator").notNull(),
+    // Transfer block size in source points.
+    incrementPoints: integer("increment_points").notNull(),
+    // Structural bonus (Marriott: 5000 miles per 60000 points); null elsewhere.
+    bonusMilesPerBlock: integer("bonus_miles_per_block"),
+    bonusBlockPoints: integer("bonus_block_points"),
+    transferTimeDays: integer("transfer_time_days"),
+    active: boolean("active").notNull().default(true),
+    notes: text("notes"),
+  },
+  (t) => [primaryKey({ columns: [t.fromProgramSlug, t.toProgramSlug] })],
+);
+
+export const transferBonuses = pgTable(
+  "transfer_bonuses",
+  {
+    id: serial("id").primaryKey(),
+    fromProgramSlug: text("from_program_slug").notNull(),
+    toProgramSlug: text("to_program_slug").notNull(),
+    // 30 = +30% on the base-converted amount (dated manual promo rows).
+    bonusPercent: integer("bonus_percent").notNull(),
+    startDate: date("start_date").notNull(),
+    endDate: date("end_date").notNull(),
+    // Where the promo was seen (DATA-03: methodology stays transparent).
+    sourceNote: text("source_note").notNull(),
+  },
+  (t) => [
+    foreignKey({
+      columns: [t.fromProgramSlug, t.toProgramSlug],
+      foreignColumns: [
+        transferRoutes.fromProgramSlug,
+        transferRoutes.toProgramSlug,
+      ],
+    }),
+  ],
+);
+
+export const redemptions = pgTable("redemptions", {
+  // e.g. "ana-business-tokyo-via-virgin"
+  slug: text("slug").primaryKey(),
+  partnerProgramSlug: text("partner_program_slug")
+    .notNull()
+    .references(() => programs.slug),
+  title: text("title").notNull(),
+  category: redemptionCategory("category").notNull(),
+  origin: text("origin"),
+  destination: text("destination"),
+  cabin: text("cabin"),
+  // Range framing per Pitfall 1; pointsMax null = fixed-price program/chart.
+  pointsMin: integer("points_min").notNull(),
+  pointsMax: integer("points_max"),
+  // Money is always integer cents.
+  taxesFeesCents: integer("taxes_fees_cents").notNull(),
+  cashFareCents: integer("cash_fare_cents").notNull(),
+  availabilityRating: availabilityRating("availability_rating").notNull(),
+  // 2-4 lines of booking guidance; RANK-05 consumes this.
+  bookingHint: text("booking_hint").notNull(),
+  methodologyNote: text("methodology_note"),
+  // Pitfall 1: non-negotiable provenance.
+  sourceNote: text("source_note").notNull(),
+  // NULL = draft, not shippable (DATA-04 draft-vs-verified workflow).
+  verifiedAt: date("verified_at"),
+  // Stable string mapped to static image imports in a typed manifest.
+  imageSlug: text("image_slug"),
+  featured: boolean("featured").notNull().default(false),
+  notes: text("notes"),
 });
