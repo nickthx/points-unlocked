@@ -25,7 +25,7 @@ The "wow" moment: a user sees that the points they were about to burn at 1¢ eac
 - [ ] Saved user record holds: identity (email/OAuth), points balances, travel goals (stored only, no v1 ranking effect), and bookmarked redemptions
 - [ ] Legal handling of user data: privacy policy, consent, and deletion rights
 - [ ] "Coming soon" tease of the v2 AI card-roadmap advisor
-- [ ] Deployed publicly on Vercel, shareable via a single link
+- [x] Deployed publicly on Vercel, shareable via a single link — Validated in Phase 1: Foundation (https://points-unlocked.vercel.app, auto-deploy from main, Neon Postgres wired through Drizzle)
 
 ### Out of Scope
 
@@ -83,4 +83,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-08-31 after initialization*
+*Last updated: 2026-09-01 after Phase 1 (Foundation) completion — deployed skeleton live at points-unlocked.vercel.app with CI, Neon Postgres, and Drizzle wired end-to-end*
