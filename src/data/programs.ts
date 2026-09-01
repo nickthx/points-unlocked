@@ -3,8 +3,8 @@ import type { ProgramSeed } from "./types";
 // Curated program seed data (DATA-01). The 8 enterable programs are the fixed
 // contract for all later phases (canonical slugs — do not rename). Partner
 // programs exist only as transfer targets / direct redemption currencies.
-// Every drafted number here is provisional until Nick's DATA-04 verification
-// pass (plan 02-05); [ASSUMED] markers name what must be checked.
+// Cash-out baselines (A3) passed Nick's DATA-04 no-veto review 2026-09-01;
+// full methodology sign-off remains a Phase 3 gate.
 
 export const programs = [
   // ── The 8 user-enterable programs (canonical slugs, fixed contract) ──────
@@ -13,7 +13,7 @@ export const programs = [
     name: "Chase Ultimate Rewards",
     kind: "bank",
     isUserEnterable: true,
-    // [ASSUMED] baseline — Nick methodology sign-off (A3): 1.0¢/pt cash-out.
+    // A3 confirmed 2026-09-01 (explicitly): 1.0¢/pt cash-out.
     cashOutBaselineCppX100: 100,
   },
   {
@@ -21,7 +21,7 @@ export const programs = [
     name: "Amex Membership Rewards",
     kind: "bank",
     isUserEnterable: true,
-    // [ASSUMED] baseline — Nick methodology sign-off (A3): 0.6¢/pt statement credit.
+    // A3 confirmed 2026-09-01 (explicitly): 0.6¢/pt statement credit.
     cashOutBaselineCppX100: 60,
   },
   {
@@ -29,7 +29,7 @@ export const programs = [
     name: "Capital One Miles",
     kind: "bank",
     isUserEnterable: true,
-    // [ASSUMED] baseline — Nick methodology sign-off (A3): 0.5¢/pt cash-out.
+    // A3 no-veto 2026-09-01: 0.5¢/pt cash-out matches published values.
     cashOutBaselineCppX100: 50,
   },
   {
@@ -37,7 +37,7 @@ export const programs = [
     name: "Citi ThankYou Points",
     kind: "bank",
     isUserEnterable: true,
-    // [ASSUMED] baseline — Nick methodology sign-off (A3): 1.0¢/pt cash-out.
+    // A3 no-veto 2026-09-01: 1.0¢/pt cash-out matches published values.
     cashOutBaselineCppX100: 100,
   },
   {
@@ -45,9 +45,9 @@ export const programs = [
     name: "Bilt Rewards",
     kind: "bank",
     isUserEnterable: true,
-    // [ASSUMED] baseline — Nick methodology sign-off (A3): Bilt has effectively
-    // no cash-out path; schema requires a positive integer, so 10 (= 0.1¢/pt)
-    // stands in for "near zero" until Nick picks the convention.
+    // A3 no-veto 2026-09-01: Bilt has effectively no cash-out path; schema
+    // requires a positive integer, so 10 (= 0.1¢/pt) stands in for "near
+    // zero". Final convention lands with the Phase 3 methodology sign-off.
     cashOutBaselineCppX100: 10,
   },
   {
@@ -73,8 +73,8 @@ export const programs = [
   },
 
   // ── Partner programs (transfer targets only; never user-enterable) ───────
-  // Partner list per program is Assumption A5 — wrong routes are caught by the
-  // DATA-04 verification gate; drafts never ship.
+  // Partner lists (A5) confirmed in Nick's DATA-04 verification pass
+  // (2026-09-01) — all 46 routes structurally verified.
   {
     slug: "ana-mileage-club",
     name: "ANA Mileage Club",
@@ -160,8 +160,10 @@ export const programs = [
     cashOutBaselineCppX100: null,
   },
   {
+    // Slug stays stable through the Aug 2025 rebrand (Mileage Plan → Atmos
+    // Rewards); only the display name changed.
     slug: "alaska-mileage-plan",
-    name: "Alaska Airlines Mileage Plan",
+    name: "Alaska Atmos Rewards",
     kind: "airline",
     isUserEnterable: false,
     cashOutBaselineCppX100: null,

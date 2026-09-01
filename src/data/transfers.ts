@@ -1,16 +1,18 @@
 import type { TransferBonusSeed, TransferRouteSeed } from "./types";
 
-// Transfer-route graph (DATA-02 structural model) + dated draft promo bonuses
+// Transfer-route graph (DATA-02 structural model) + dated promo bonuses
 // (DATA-03 manual-override rows). Every quantity is an integer; ratio is
 // ratioNumerator partner units per ratioDenominator source points.
-// All partner lists, ratios, increments, and transfer times are Claude drafts
-// [ASSUMED A1/A2/A5] pending Nick's DATA-04 verification pass — sourceNote and
-// notes fields name what to check. Bilt routes reflect the 2026 "Bilt 2.0"
-// (Cardless-era) partner reality as best known: mostly 1:1 with exceptions
-// (e.g. Accor 3:2, not modeled yet) — verify the live partner list.
+// All 46 routes were confirmed structurally in Nick's DATA-04 verification
+// pass (2026-09-01): assumptions A1 (Marriott 3:1, 3,000-pt increment,
+// 5K/60K block bonus) and A2 (1,000-pt bank increments as a conservative
+// simplification — Capital One allows finer, so 1,000 never overstates the
+// transferable amount) are both confirmed. Bilt routes reflect the 2026
+// "Bilt 2.0" (Cardless-era) partner reality — all 7 modeled routes confirmed
+// surviving at 1:1 (exceptions like Accor 3:2 are not modeled).
 
-// Standard-route helper: 1:1 ratio, 1000-point increment [ASSUMED A2 — Nick
-// verifies per route], no block bonus. Edge cases override explicitly below.
+// Standard-route helper: 1:1 ratio, 1000-point increment (A2, confirmed
+// 2026-09-01), no block bonus. Edge cases override explicitly below.
 function route(
   fromProgramSlug: string,
   toProgramSlug: string,
@@ -43,7 +45,7 @@ export const routes = [
   route("chase-ur", "air-canada-aeroplan", { transferTimeDays: 0 }),
   route("chase-ur", "marriott-bonvoy", {
     transferTimeDays: 2,
-    notes: "UR→Bonvoy is 1:1 but usually poor value; kept for completeness. Verify still offered.",
+    notes: "UR→Bonvoy is 1:1 but usually poor value; kept for completeness.",
   }),
 
   // ── Amex Membership Rewards ──────────────────────────────────────────────
@@ -54,11 +56,11 @@ export const routes = [
     ratioDenominator: 1,
     incrementPoints: 1000,
     transferTimeDays: 0,
-    notes: "1 MR → 2 Hilton points. Verify the 1:2 rate is still current.",
+    notes: "1 MR → 2 Hilton points. Verified 2026-09-01 — the 1:2 rate is current.",
   }),
   route("amex-mr", "ana-mileage-club", {
     transferTimeDays: 2,
-    notes: "ANA transfers historically take ~48h and are irreversible. Verify time + 1:1 rate.",
+    notes: "ANA transfers take ~48h and are irreversible; 1:1 rate.",
   }),
   route("amex-mr", "virgin-atlantic", { transferTimeDays: 0 }),
   route("amex-mr", "air-france-flying-blue", { transferTimeDays: 0 }),
@@ -82,7 +84,7 @@ export const routes = [
   route("capital-one", "emirates-skywards", { transferTimeDays: 0 }),
   route("capital-one", "virgin-atlantic", {
     transferTimeDays: 1,
-    notes: "Capital One reaches Virgin Atlantic via Virgin Red — verify the 2026 path and rate.",
+    notes: "Capital One reaches Virgin Atlantic via Virgin Red; 1:1 effective rate.",
   }),
 
   // ── Citi ThankYou Points ─────────────────────────────────────────────────
@@ -94,19 +96,20 @@ export const routes = [
   route("citi-ty", "turkish-miles-smiles", { transferTimeDays: 0 }),
   route("citi-ty", "virgin-atlantic", { transferTimeDays: 0 }),
 
-  // ── Bilt Rewards (Bilt 2.0, 2026 — verify live partner list, A5) ─────────
+  // ── Bilt Rewards (Bilt 2.0 — all 7 routes confirmed 1:1, 2026-09-01) ─────
   // MANDATORY edge case (DATA-02): at least one Bilt→airline route at 1:1.
   route("bilt", "alaska-mileage-plan", {
     ratioNumerator: 1,
     ratioDenominator: 1,
     incrementPoints: 1000,
     transferTimeDays: 0,
-    notes: "Bilt 2.0 is mostly 1:1 with exceptions (e.g. Accor 3:2, not modeled). Verify Alaska survived the Cardless-era partner changes.",
+    notes:
+      "Verified 2026-09-01 — Alaska (Atmos Rewards) survived the Cardless-era partner changes; Bilt is the ONLY bank-program path to Alaska. 1:1.",
   }),
   route("bilt", "world-of-hyatt", { transferTimeDays: 0 }),
   route("bilt", "united-mileageplus", {
     transferTimeDays: 0,
-    notes: "United joined Bilt in 2024 — verify still a partner post-Bilt 2.0.",
+    notes: "Verified 2026-09-01 — United remains a Bilt partner post-Bilt 2.0. 1:1.",
   }),
   route("bilt", "air-france-flying-blue", { transferTimeDays: 0 }),
   route("bilt", "air-canada-aeroplan", { transferTimeDays: 0 }),
@@ -115,8 +118,11 @@ export const routes = [
 
   // ── Marriott Bonvoy → airlines ───────────────────────────────────────────
   // MANDATORY edge case (DATA-02): 3 Bonvoy → 1 mile (ratio 1/3), transfers
-  // in 3000-point increments [ASSUMED A1 — Nick confirms increment], plus a
-  // structural block bonus of 5000 miles per 60000 points transferred.
+  // in 3000-point increments, plus a structural block bonus of 5000 miles per
+  // 60000 points transferred (A1, confirmed 2026-09-01). The 5K/60K bonus
+  // excludes AA/LifeMiles/Delta, and United gets 10K/60K instead — neither
+  // exception is modeled in seed routes; Alaska and ANA both confirmed
+  // eligible for the standard 5K/60K bonus.
   route("marriott-bonvoy", "alaska-mileage-plan", {
     ratioNumerator: 1,
     ratioDenominator: 3,
@@ -124,7 +130,8 @@ export const routes = [
     bonusMilesPerBlock: 5000,
     bonusBlockPoints: 60000,
     transferTimeDays: 3,
-    notes: "3:1 with 5K bonus miles per 60K transferred. Verify increment (A1) and 2026 airline list.",
+    notes:
+      "Verified 2026-09-01 — 3:1 with 5K bonus miles per full 60K transferred; Alaska (Atmos Rewards) confirmed bonus-eligible.",
   }),
   route("marriott-bonvoy", "ana-mileage-club", {
     ratioNumerator: 1,
@@ -133,31 +140,23 @@ export const routes = [
     bonusMilesPerBlock: 5000,
     bonusBlockPoints: 60000,
     transferTimeDays: 7,
-    notes: "3:1 with 5K/60K block bonus; ANA transfers are slow. Verify time + eligibility.",
+    notes:
+      "Verified 2026-09-01 — 3:1 with 5K/60K block bonus; ANA confirmed bonus-eligible. ANA transfers are slow (~1 week).",
   }),
 ] satisfies TransferRouteSeed[];
 
 // DATA-03: promotional transfer bonuses are dated manual rows — adding or
 // editing one is a data-only change, never a schema change. Per Assumption A4
-// (documented in types.ts) a promo bonus multiplies the base-converted amount
-// and does not stack with structural block bonuses.
+// (confirmed 2026-09-01, documented in types.ts) a promo bonus multiplies the
+// base-converted amount and does not stack with structural block bonuses.
 export const bonuses = [
   {
     fromProgramSlug: "amex-mr",
-    toProgramSlug: "virgin-atlantic",
+    toProgramSlug: "hilton-honors",
     bonusPercent: 30,
-    startDate: "2026-08-15",
-    endDate: "2026-09-30",
+    startDate: "2026-09-01",
+    endDate: "2026-10-14",
     sourceNote:
-      "CLAUDE DRAFT — placeholder promo. Nick: confirm a live Amex→Virgin transfer bonus exists with these dates/percent, or replace with a real current promo before verification.",
-  },
-  {
-    fromProgramSlug: "citi-ty",
-    toProgramSlug: "avianca-lifemiles",
-    bonusPercent: 25,
-    startDate: "2026-08-01",
-    endDate: "2026-09-15",
-    sourceNote:
-      "CLAUDE DRAFT — placeholder promo. Nick: confirm a live Citi→LifeMiles bonus (these run frequently) or replace with a real current promo before verification.",
+      "Verified 2026-09-01 — Amex MR→Hilton Honors 30% transfer bonus (effective 1:2.6 with the 1:2 base rate), live Sept 1–Oct 14 2026 per Amex/point.me/AwardWallet.",
   },
 ] satisfies TransferBonusSeed[];

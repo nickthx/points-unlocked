@@ -14,7 +14,7 @@ import type { TransferRouteSeed } from "../data/types";
  *
  * Semantics (frozen by tests/transfers.test.ts against real seed rows):
  * 1. Floor the source balance to the route's transfer increment
- *    (Assumption A1 — e.g. Marriott moves in 3000-point blocks).
+ *    (A1, confirmed 2026-09-01 — e.g. Marriott moves in 3000-point blocks).
  * 2. Apply the integer ratio: floor(transferable × numerator / denominator).
  * 3. Add the structural block bonus (e.g. Marriott's 5000 miles per full
  *    60000 points transferred) when both bonus fields are set.
@@ -39,7 +39,7 @@ export function computePartnerPoints(
 /**
  * Apply a promotional transfer bonus to a base-CONVERTED partner amount.
  *
- * Assumption A4 (pending Nick's DATA-04 confirmation): promotional bonuses
+ * Assumption A4 (CONFIRMED by Nick 2026-09-01): promotional bonuses
  * multiply the base-converted amount only — never the source points — and do
  * NOT stack with structural block bonuses. Callers pass the base conversion
  * (without block bonus) when a promo applies; the engine never compounds both.
