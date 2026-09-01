@@ -25,10 +25,10 @@ See: .planning/PROJECT.md (updated 2026-08-31)
 
 ## Current Position
 
-Phase: 02 (redemption-database) — EXECUTING
-Plan: 1 of 5
-Status: Executing Phase 02
-Last activity: 2026-09-01 -- Phase 02 execution started
+Phase: 02 (redemption-database) — PAUSED AT CHECKPOINT
+Plan: 5 of 5 (02-05 blocked on human gate)
+Status: Plans 02-01..02-04 complete; 02-05 (DATA-04 verification gate) deferred by user
+Last activity: 2026-09-01 -- User deferred DATA-04 human verification; phase left incomplete intentionally
 
 Progress: [██████████] 100%
 
@@ -85,7 +85,7 @@ Items acknowledged and carried forward from previous milestone close:
 
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
-| *(none)* | | | |
+| Data verification | Plan 02-05 DATA-04 gate: verify ≥30 redemption entries (all 8 programs) + rule on A1–A4 assumptions + replace 2 placeholder promo rows. All 36 entries remain `verifiedAt: null`; ≥30-verified coverage test still dormant. Resume with `/gsd-execute-phase 2`. | deferred | 2026-09-01 |
 
 ## Session Continuity
 
