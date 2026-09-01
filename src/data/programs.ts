@@ -4,7 +4,8 @@ import type { ProgramSeed } from "./types";
 // contract for all later phases (canonical slugs — do not rename). Partner
 // programs exist only as transfer targets / direct redemption currencies.
 // Cash-out baselines (A3) passed Nick's DATA-04 no-veto review 2026-09-01;
-// full methodology sign-off remains a Phase 3 gate.
+// the Phase 3 methodology sign-off (A1/A2/Bilt) was ratified by Nick
+// 2026-09-01 — see src/engine/types.ts for the rulings as encoded.
 
 export const programs = [
   // ── The 8 user-enterable programs (canonical slugs, fixed contract) ──────
@@ -45,9 +46,10 @@ export const programs = [
     name: "Bilt Rewards",
     kind: "bank",
     isUserEnterable: true,
-    // A3 no-veto 2026-09-01: Bilt has effectively no cash-out path; schema
-    // requires a positive integer, so 10 (= 0.1¢/pt) stands in for "near
-    // zero". Final convention lands with the Phase 3 methodology sign-off.
+    // CONFIRMED by Nick 2026-09-01 (Phase 3 methodology sign-off): Bilt has
+    // effectively no cash-out path; schema requires a positive integer, so
+    // 10 (= 0.1¢/pt) is the ratified stand-in for "near zero". This value
+    // feeds every Bilt wow delta.
     cashOutBaselineCppX100: 10,
   },
   {
