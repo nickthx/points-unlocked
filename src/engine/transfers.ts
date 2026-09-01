@@ -35,3 +35,18 @@ export function computePartnerPoints(
       : 0;
   return base + bonus;
 }
+
+/**
+ * Apply a promotional transfer bonus to a base-CONVERTED partner amount.
+ *
+ * Assumption A4 (pending Nick's DATA-04 confirmation): promotional bonuses
+ * multiply the base-converted amount only — never the source points — and do
+ * NOT stack with structural block bonuses. Callers pass the base conversion
+ * (without block bonus) when a promo applies; the engine never compounds both.
+ */
+export function applyPromoBonus(
+  basePartnerPoints: number,
+  bonusPercent: number,
+): number {
+  return Math.floor((basePartnerPoints * (100 + bonusPercent)) / 100);
+}
