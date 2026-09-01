@@ -77,11 +77,14 @@ Plans:
   4. The engine resolves the cheapest transfer path when multiple held programs reach the same partner
   5. The engine module imports nothing from Next.js, React, or the database layer
 
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
 
-- [ ] 03-01: TBD
+- [ ] 03-01-PLAN.md — Ratify A1/A2/Bilt baseline (checkpoint), engine type contracts, executable purity gate
+- [ ] 03-02-PLAN.md — paths.ts (TDD): active-bonus windows, A4-safe conversion, binary-search inverse math, A1 cheapest path
+- [ ] 03-03-PLAN.md — valuation.ts (TDD): TPG cppX100 + effectiveCppX100, per-program-baseline wow delta
+- [ ] 03-04-PLAN.md — ranking.ts orchestrator (TDD): partition/sort/threshold, VAL-05 end-to-end, hardening, public barrel
 
 ### Phase 4: Core Experience
 
