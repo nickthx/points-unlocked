@@ -1,8 +1,14 @@
 import { describe, expect, it } from "vitest";
 
+import { programs } from "../src/data/programs";
 import { redemptions } from "../src/data/redemptions";
-import type { RedemptionSeed } from "../src/data/types";
-import { cppX100, effectiveCppX100 } from "../src/engine/valuation";
+import type { ProgramSeed, RedemptionSeed } from "../src/data/types";
+import {
+  cashOutValueCents,
+  cppX100,
+  effectiveCppX100,
+  wowDeltaCents,
+} from "../src/engine/valuation";
 
 // Every anchor below is asserted twice: once from hand-computed literal inputs
 // (the frozen TPG arithmetic) and once against the REAL seed rows from
@@ -10,6 +16,16 @@ import { cppX100, effectiveCppX100 } from "../src/engine/valuation";
 // misplaced zero in cashFareCents) fails CI exactly like a math regression
 // would (VAL-02). It-titles show the TPG dollars-form check so a reviewer can
 // re-derive each number by hand.
+
+function findProgram(slug: string): ProgramSeed {
+  const program = programs.find((p) => p.slug === slug);
+  if (!program) {
+    throw new Error(
+      `expected seed program "${slug}" is missing from src/data/programs.ts`,
+    );
+  }
+  return program;
+}
 
 function findRedemption(slug: string): RedemptionSeed {
   const row = redemptions.find((r) => r.slug === slug);
@@ -77,5 +93,50 @@ describe("effectiveCppX100 (VAL-05's valuation half — per-source-point cpp)", 
     expect(effectiveCppX100(900_000, 60_000, 0)).toBe(0);
     expect(effectiveCppX100(900_000, 60_000, -5)).toBe(0);
     expect(effectiveCppX100(Number.NaN, 0, 1_000)).toBe(0);
+  });
+});
+
+describe("cashOutValueCents (per-program baselines — never a flat 1¢)", () => {
+  it("Chase UR (baseline 100 = 1.0¢/pt): 90,000 pts → 90,000 cents ($900)", () => {
+    expect(cashOutValueCents(90_000, findProgram("chase-ur"))).toBe(90_000);
+  });
+
+  it("Bilt: 60,000 pts × the ratified baseline from the real row ÷ 100", () => {
+    // The expectation reads the ratified cashOutBaselineCppX100 straight off
+    // the seed row (CONFIRMED 2026-09-01: 10 = 0.1¢/pt stand-in) — if the
+    // ruling ever changes in src/data/programs.ts, this test follows it.
+    const bilt = findProgram("bilt");
+    expect(bilt.cashOutBaselineCppX100).not.toBeNull();
+    expect(cashOutValueCents(60_000, bilt)).toBe(
+      Math.floor((60_000 * bilt.cashOutBaselineCppX100!) / 100),
+    );
+    // With the ratified stand-in of 10, that is $60 for 60K Bilt points.
+    expect(cashOutValueCents(60_000, bilt)).toBe(6_000);
+  });
+
+  it("null baseline (world-of-hyatt): no cash-out path ⇒ 0 (null ⇒ 0 rule)", () => {
+    expect(cashOutValueCents(500_000, findProgram("world-of-hyatt"))).toBe(0);
+  });
+});
+
+describe("wowDeltaCents (RANK-01 — transfer-partner value minus cash-out value)", () => {
+  it("ANA business via 90,000 Chase UR: $8,400 net value − $900 cash-out = $7,500 → 750,000 cents", () => {
+    expect(wowDeltaCents(900_000, 60_000, 90_000, findProgram("chase-ur"))).toBe(
+      750_000,
+    );
+  });
+
+  it("same fare via 60,000 Bilt: 840,000 − cashOutValueCents(60,000, bilt) (834,000 at baseline 10)", () => {
+    const bilt = findProgram("bilt");
+    expect(wowDeltaCents(900_000, 60_000, 60_000, bilt)).toBe(
+      840_000 - cashOutValueCents(60_000, bilt),
+    );
+    expect(wowDeltaCents(900_000, 60_000, 60_000, bilt)).toBe(834_000);
+  });
+
+  it("null-baseline program (world-of-hyatt): delta is the full net cash value (840,000)", () => {
+    expect(
+      wowDeltaCents(900_000, 60_000, 100_000, findProgram("world-of-hyatt")),
+    ).toBe(840_000);
   });
 });
