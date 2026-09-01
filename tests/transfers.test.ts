@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { routes } from "../src/data/transfers";
 import type { TransferRouteSeed } from "../src/data/types";
-import { computePartnerPoints } from "../src/engine/transfers";
+import { applyPromoBonus, computePartnerPoints } from "../src/engine/transfers";
 
 // Every expectation below runs against REAL rows from src/data/transfers.ts —
 // not inline fixtures — so a data-entry typo in a seed row (e.g. the Marriott
@@ -64,5 +64,26 @@ describe("computePartnerPoints", () => {
     it("900 points on a 1000-increment route → 0 (below minimum transfer)", () => {
       expect(computePartnerPoints(bilt, 900)).toBe(0);
     });
+  });
+});
+
+describe("applyPromoBonus (DATA-03 composition rule)", () => {
+  const mrToHilton = findRoute("amex-mr", "hilton-honors");
+
+  it("plain 30% on a 1:1-equivalent base: 10,000 → 13,000", () => {
+    expect(applyPromoBonus(10_000, 30)).toBe(13_000);
+  });
+
+  it("composes on the base-CONVERTED amount, never source points: 10,000 MR → 20,000 Hilton → 26,000", () => {
+    // A4: the promo multiplies the converted 20,000 Hilton points (→ 26,000),
+    // not the 10,000 source MR points. Structural block bonuses never stack
+    // with promo bonuses (pending Nick's DATA-04 confirmation).
+    expect(applyPromoBonus(computePartnerPoints(mrToHilton, 10_000), 30)).toBe(
+      26_000,
+    );
+  });
+
+  it("floors fractional results: applyPromoBonus(1,001, 30) → 1,301", () => {
+    expect(applyPromoBonus(1_001, 30)).toBe(1_301);
   });
 });
