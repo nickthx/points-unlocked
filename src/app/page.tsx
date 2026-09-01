@@ -1,7 +1,24 @@
+import { db, healthCheck } from "@/db";
+
+// Phase 1 placeholder: force-dynamic proves the live DB path on every request
+// (D-16). Phase 2+ moves to cached reads per ARCHITECTURE.md.
+export const dynamic = "force-dynamic";
+
 // D-04 homepage shell: wordmark + pitch + in-progress note. This is the real
 // production app shell (D-01 — no holding page); Phase 4 replaces it with the
 // balance-entry flow. Server component, zero client JS.
-export default function Home() {
+export default async function Home() {
+  let dbStatus = "infrastructure: warming up";
+  try {
+    const rows = await db.select().from(healthCheck).limit(1);
+    if (rows.length > 0) {
+      dbStatus = "infrastructure: live";
+    }
+  } catch {
+    // T-01-07: never render the caught error — it can embed connection details.
+    // Neutral fallback set above.
+  }
+
   return (
     <main className="flex flex-1 flex-col items-center justify-center bg-cream px-6 text-center">
       <h1 className="font-display text-display text-ink sm:text-display-xl">
@@ -12,6 +29,9 @@ export default function Home() {
       </p>
       <p className="mt-12 text-sm tracking-wide text-terracotta uppercase">
         In progress — launching soon
+      </p>
+      <p className="mt-2 text-xs tracking-wide text-ink/40 uppercase">
+        {dbStatus}
       </p>
     </main>
   );
