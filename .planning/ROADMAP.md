@@ -62,7 +62,7 @@ Plans:
 - [x] 02-02-PLAN.md — Author typed seed data: 8+partner programs, structural routes (Marriott/Amex-Hilton/Bilt edge cases), draft bonuses, 35-40 draft redemptions
 - [x] 02-03-PLAN.md — Pure engine transfer math (TDD): computePartnerPoints + applyPromoBonus vs real seed rows, purity gate
 - [x] 02-04-PLAN.md — Idempotent one-command seed pipeline (db.batch rebuild) + DB-free structural test suite
-- [ ] 02-05-PLAN.md — DATA-04 gate: Nick verifies ≥30 entries (human checkpoint), coverage test activates, reseed Neon
+- [x] 02-05-PLAN.md — DATA-04 gate: Nick verifies ≥30 entries (human checkpoint), coverage test activates, reseed Neon
 
 ### Phase 3: Valuation & Ranking Engine
 
