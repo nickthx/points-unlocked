@@ -19,8 +19,8 @@ The "wow" moment: a user sees that the points they were about to burn at 1¢ eac
 - [ ] User can enter points balances for 8 programs: Chase UR, Amex MR, Capital One, Citi TY, Bilt, World of Hyatt, Hilton Honors, Marriott Bonvoy
 - [ ] App shows ranked redemptions matched to the user's balances — hybrid ranking: bookable-now redemptions ordered by wow delta, then an "almost there" section showing what a bit more earning unlocks
 - [ ] Each redemption shows dual valuation side by side: retail cash fare AND cents-per-point, with a transparent methodology note
-- [ ] Curated redemption database of ~80–120 entries (sweet spots, transfer ratios, rough award pricing) — built together: Claude drafts from research, Nick corrects with real numbers
-- [ ] Static transfer rates in the data model, with a manual field for transfer bonuses (Nick enters these by hand for now)
+- [ ] Curated redemption database of ~80–120 entries (sweet spots, transfer ratios, rough award pricing) — built together: Claude drafts from research, Nick corrects with real numbers — Phase 2 delivered the foundation: 36 entries (34 verified 2026-09-01 against live sources, all 8 programs covered); growth to 80–120 continues alongside later phases
+- [x] Static transfer rates in the data model, with a manual field for transfer bonuses (Nick enters these by hand for now) — Validated in Phase 2: Redemption Database (46 routes with ratio/increment/block-bonus modeling, dated manual bonus rows, one live verified promo)
 - [ ] App works instantly with no login; an optional "save my balances" prompts sign-up (Clerk)
 - [ ] Saved user record holds: identity (email/OAuth), points balances, travel goals (stored only, no v1 ranking effect), and bookmarked redemptions
 - [ ] Legal handling of user data: privacy policy, consent, and deletion rights
@@ -83,4 +83,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-01 after Phase 1 (Foundation) completion — deployed skeleton live at points-unlocked.vercel.app with CI, Neon Postgres, and Drizzle wired end-to-end*
+*Last updated: 2026-09-01 after Phase 2 (Redemption Database) completion — curated dataset live in Neon: 21 programs, 46 transfer routes, 36 redemptions (34 verified against 2026 sources), pure transfer-math engine, idempotent one-command seed*
