@@ -1,5 +1,6 @@
 import type { TransferBonusSeed, TransferRouteSeed } from "../data/types";
 import { applyPromoBonus, computePartnerPoints } from "./transfers";
+import type { Balances, EngineDataset, TransferPath } from "./types";
 
 // Pure path-resolution engine — composes the frozen Phase 2 transfer
 // primitives into promo-aware effective conversion, exact inverse transfer
@@ -124,4 +125,130 @@ export function requiredSourcePoints(
     }
   }
   return lo * increment;
+}
+
+/** Positive held balance for a program, or null when absent/non-positive. */
+function heldBalance(balances: Balances, programSlug: string): number | null {
+  const balance = (balances as Partial<Record<string, number>>)[programSlug];
+  return typeof balance === "number" && balance > 0 ? balance : null;
+}
+
+/**
+ * Preference order between two candidate paths with equal affordability
+ * status (A1, CONFIRMED by Nick 2026-09-01): fewer raw source points wins;
+ * ties break to direct-use first, then lowest fromProgramSlug (plain < on
+ * ASCII slugs — no locale machinery).
+ */
+function prefersByCost(a: TransferPath, b: TransferPath): boolean {
+  if (a.requiredSourcePoints !== b.requiredSourcePoints) {
+    return a.requiredSourcePoints < b.requiredSourcePoints;
+  }
+  if (a.kind !== b.kind) {
+    return a.kind === "direct";
+  }
+  return a.fromProgramSlug < b.fromProgramSlug;
+}
+
+/**
+ * Resolve every way the held balances can fund partnerPointsNeeded in the
+ * partner program, and pick the A1-cheapest.
+ *
+ * Candidates are direct use of the partner currency (when held) plus every
+ * ACTIVE single-hop route into the partner from a positively-held program
+ * (A5 fail-closed: active:false routes never surface; A7: multi-hop chains
+ * like Chase→Marriott→Alaska are out of scope for v1).
+ *
+ * Selection (A1, CONFIRMED by Nick 2026-09-01): among AFFORDABLE candidates
+ * (balance covers requiredSourcePoints) the minimum raw requiredSourcePoints
+ * wins — ties break to direct-use first, then lowest fromProgramSlug. When
+ * nothing is affordable, the maximum-coverage candidate (balance ÷ required,
+ * compared by integer cross-multiplication — no float is stored) is chosen so
+ * callers can compute an honest points-away figure. Returns null when no held
+ * program reaches the partner at all.
+ */
+export function resolvePaths(
+  partnerProgramSlug: string,
+  partnerPointsNeeded: number,
+  balances: Balances,
+  dataset: EngineDataset,
+  asOf: string,
+): { chosenPath: TransferPath; alternatePaths: TransferPath[] } | null {
+  const candidates: TransferPath[] = [];
+
+  const directBalance = heldBalance(balances, partnerProgramSlug);
+  if (directBalance !== null) {
+    candidates.push({
+      kind: "direct",
+      fromProgramSlug: partnerProgramSlug,
+      requiredSourcePoints: partnerPointsNeeded,
+      activeBonus: null,
+    });
+  }
+
+  for (const route of dataset.routes) {
+    if (route.toProgramSlug !== partnerProgramSlug || !route.active) {
+      continue; // A5: inactive routes are filtered fail-closed
+    }
+    const balance = heldBalance(balances, route.fromProgramSlug);
+    if (balance === null) {
+      continue;
+    }
+    const bonus = activeBonusFor(route, dataset.bonuses, asOf);
+    const required = requiredSourcePoints(route, bonus, partnerPointsNeeded);
+    if (required === null) {
+      continue;
+    }
+    candidates.push({
+      kind: "transfer",
+      fromProgramSlug: route.fromProgramSlug,
+      routeKey: `${route.fromProgramSlug}→${route.toProgramSlug}`,
+      requiredSourcePoints: required,
+      activeBonus: bonus,
+    });
+  }
+
+  if (candidates.length === 0) {
+    return null;
+  }
+
+  const isAffordable = (p: TransferPath): boolean =>
+    (heldBalance(balances, p.fromProgramSlug) ?? 0) >= p.requiredSourcePoints;
+
+  // Coverage comparison without floats: balA/reqA > balB/reqB ⇔
+  // balA × reqB > balB × reqA (all positive integers).
+  const prefersByCoverage = (a: TransferPath, b: TransferPath): boolean => {
+    const balA = heldBalance(balances, a.fromProgramSlug) ?? 0;
+    const balB = heldBalance(balances, b.fromProgramSlug) ?? 0;
+    const crossA = balA * b.requiredSourcePoints;
+    const crossB = balB * a.requiredSourcePoints;
+    if (crossA !== crossB) {
+      return crossA > crossB;
+    }
+    if (a.kind !== b.kind) {
+      return a.kind === "direct";
+    }
+    return a.fromProgramSlug < b.fromProgramSlug;
+  };
+
+  const affordable = candidates.filter(isAffordable);
+  const pool = affordable.length > 0 ? affordable : candidates;
+  const prefers = affordable.length > 0 ? prefersByCost : prefersByCoverage;
+
+  let chosen = pool[0];
+  for (const candidate of pool.slice(1)) {
+    if (prefers(candidate, chosen)) {
+      chosen = candidate;
+    }
+  }
+
+  const alternatePaths = candidates
+    .filter((p) => p !== chosen)
+    .sort((a, b) => {
+      if (a.requiredSourcePoints !== b.requiredSourcePoints) {
+        return a.requiredSourcePoints - b.requiredSourcePoints;
+      }
+      return a.fromProgramSlug < b.fromProgramSlug ? -1 : 1;
+    });
+
+  return { chosenPath: chosen, alternatePaths };
 }
