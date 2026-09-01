@@ -81,9 +81,14 @@ Plans:
 
 Plans:
 
+**Wave 1**
 - [ ] 03-01-PLAN.md — Ratify A1/A2/Bilt baseline (checkpoint), engine type contracts, executable purity gate
+
+**Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 03-02-PLAN.md — paths.ts (TDD): active-bonus windows, A4-safe conversion, binary-search inverse math, A1 cheapest path
 - [ ] 03-03-PLAN.md — valuation.ts (TDD): TPG cppX100 + effectiveCppX100, per-program-baseline wow delta
+
+**Wave 3** *(blocked on Wave 2 completion)*
 - [ ] 03-04-PLAN.md — ranking.ts orchestrator (TDD): partition/sort/threshold, VAL-05 end-to-end, hardening, public barrel
 
 ### Phase 4: Core Experience
