@@ -69,3 +69,59 @@ export function effectivePartnerPoints(
   );
   return applyPromoBonus(baseOnly, bonus.bonusPercent);
 }
+
+/**
+ * The minimum increment-multiple source amount whose effective conversion
+ * covers partnerPointsNeeded — the exact INVERSE of effectivePartnerPoints.
+ *
+ * WHY not naive ratio division: block bonuses make the naive figure wrong by
+ * up to 30,000 points on the route experts check first. Needing 60,000 Alaska
+ * miles via Marriott (1:3), naive division says 60,000 × 3 = 180,000 Bonvoy —
+ * but 150,000 already yields 60,000 (base 50,000 + two 5K/60K block bonuses).
+ * Promos shift the answer the same way (200,000 Hilton via Amex costs 77,000
+ * MR during the +30% window, 100,000 MR after it). This rationale feeds the
+ * Phase 5 methodology page.
+ *
+ * Algorithm (RESEARCH Pattern 3): effectivePartnerPoints is monotonically
+ * non-decreasing in sourcePoints (floors of non-decreasing functions), so
+ * binary search over increment multiples is exact. Upper bound = the
+ * base-ratio ceiling ceil(needed × den / num) rounded UP to the increment —
+ * valid because block bonuses and promos only ADD partner points, so the
+ * base-ratio ceiling always suffices. Search k ∈ [0, upper/increment] for the
+ * smallest k with effectivePartnerPoints(k × increment) ≥ needed; the finite
+ * ceiling also bounds the loop against hostile inputs (T-03-05).
+ *
+ * Integer-only math throughout. Returns null if even the upper bound fails —
+ * defensive and unreachable for valid routes, kept as a guard branch.
+ */
+export function requiredSourcePoints(
+  route: TransferRouteSeed,
+  bonus: TransferBonusSeed | null,
+  partnerPointsNeeded: number,
+): number | null {
+  if (partnerPointsNeeded <= 0) {
+    return 0;
+  }
+  const increment = route.incrementPoints;
+  const baseCeiling = Math.ceil(
+    (partnerPointsNeeded * route.ratioDenominator) / route.ratioNumerator,
+  );
+  const upperK = Math.ceil(baseCeiling / increment);
+  if (effectivePartnerPoints(route, bonus, upperK * increment) < partnerPointsNeeded) {
+    return null; // defensive — unreachable for valid routes
+  }
+  let lo = 0;
+  let hi = upperK;
+  while (lo < hi) {
+    const mid = Math.floor((lo + hi) / 2);
+    if (
+      effectivePartnerPoints(route, bonus, mid * increment) >=
+      partnerPointsNeeded
+    ) {
+      hi = mid;
+    } else {
+      lo = mid + 1;
+    }
+  }
+  return lo * increment;
+}
