@@ -35,7 +35,7 @@ Plans:
 - [x] 01-02-PLAN.md — shadcn/ui set, Fraunces+Inter @theme tokens, D-04 homepage with noindex
 - [x] 01-03-PLAN.md — GitHub remote + advisory CI workflow (lint/typecheck/test green checks)
 - [x] 01-04-PLAN.md — Vercel project + Git auto-deploy + Neon Marketplace integration + env pull (human checkpoint)
-- [ ] 01-05-PLAN.md — Drizzle wiring, health_check push to Neon, server-component query, production deploy verification
+- [x] 01-05-PLAN.md — Drizzle wiring, health_check push to Neon, server-component query, production deploy verification
 
 ### Phase 2: Redemption Database
 **Goal**: The curated dataset exists as structured, verified data — the substance every other layer reads
