@@ -1,3 +1,5 @@
+import type { ProgramSeed } from "../data/types";
+
 // Pure valuation math — the product's finance-credibility claim (VAL-02).
 // This module MUST stay framework- and DB-free: no next/react/db/app/node
 // imports, ever — tests/engine-purity.test.ts enforces this boundary in CI.
@@ -55,4 +57,50 @@ export function effectiveCppX100(
   requiredSourcePoints: number,
 ): number {
   return cppX100(cashFareCents, taxesFeesCents, requiredSourcePoints);
+}
+
+/**
+ * What the spent source points would have been worth cashed out, in integer
+ * cents, using the source program's OWN baseline — never a flat 1¢/pt.
+ * (Pitfall: a flat baseline is the attackable-methodology failure — it
+ * overstates Amex deltas and understates Chase/Citi ones.)
+ *
+ * cashOutBaselineCppX100 === null means a partner-only currency with no
+ * cash-out path (hotel programs): the cash-out value is 0 by the ratified
+ * "null ⇒ 0" rule, so the wow delta is the full net cash value.
+ */
+export function cashOutValueCents(
+  spentSourcePoints: number,
+  sourceProgram: ProgramSeed,
+): number {
+  return sourceProgram.cashOutBaselineCppX100 === null
+    ? 0
+    : Math.floor(
+        (spentSourcePoints * sourceProgram.cashOutBaselineCppX100) / 100,
+      );
+}
+
+/**
+ * The wow delta in integer cents — RANK-01's definition: transfer-partner
+ * value minus the cash-out value of the source points spent.
+ *
+ * Taxes are subtracted on the value side to stay consistent with the cpp
+ * numerator: you pay taxes/fees in cash whether you book with points or
+ * dollars, so they are not part of what the points buy.
+ *
+ * spentSourcePoints is the chosen path's increment-aligned
+ * requiredSourcePoints — NOT the user's full balance (spending 90K of a
+ * 200K balance forgoes only 90K points' worth of cash-out).
+ */
+export function wowDeltaCents(
+  cashFareCents: number,
+  taxesFeesCents: number,
+  spentSourcePoints: number,
+  sourceProgram: ProgramSeed,
+): number {
+  return (
+    cashFareCents -
+    taxesFeesCents -
+    cashOutValueCents(spentSourcePoints, sourceProgram)
+  );
 }
