@@ -82,7 +82,7 @@ Plans:
 Plans:
 
 **Wave 1**
-- [ ] 03-01-PLAN.md — Ratify A1/A2/Bilt baseline (checkpoint), engine type contracts, executable purity gate
+- [x] 03-01-PLAN.md — Ratify A1/A2/Bilt baseline (checkpoint), engine type contracts, executable purity gate
 
 **Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 03-02-PLAN.md — paths.ts (TDD): active-bonus windows, A4-safe conversion, binary-search inverse math, A1 cheapest path
