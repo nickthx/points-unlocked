@@ -58,7 +58,7 @@ Plans:
 
 Plans:
 
-- [ ] 02-01-PLAN.md — Schema swap: 4 curated tables + Zod seed boundary, migrate healthCheck consumers, [BLOCKING] drizzle-kit push
+- [x] 02-01-PLAN.md — Schema swap: 4 curated tables + Zod seed boundary, migrate healthCheck consumers, [BLOCKING] drizzle-kit push
 - [ ] 02-02-PLAN.md — Author typed seed data: 8+partner programs, structural routes (Marriott/Amex-Hilton/Bilt edge cases), draft bonuses, 35-40 draft redemptions
 - [ ] 02-03-PLAN.md — Pure engine transfer math (TDD): computePartnerPoints + applyPromoBonus vs real seed rows, purity gate
 - [ ] 02-04-PLAN.md — Idempotent one-command seed pipeline (db.batch rebuild) + DB-free structural test suite
