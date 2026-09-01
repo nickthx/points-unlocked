@@ -6,7 +6,9 @@ import {
   activeBonusFor,
   effectivePartnerPoints,
   requiredSourcePoints,
+  resolvePaths,
 } from "../src/engine/paths";
+import type { EngineDataset } from "../src/engine/types";
 
 // Every expectation below runs against REAL rows from src/data/transfers.ts —
 // not inline fixtures — so a data-entry typo in a seed row (e.g. the live
@@ -173,5 +175,146 @@ describe("requiredSourcePoints (binary-search inverse transfer math)", () => {
         ).toBeLessThan(needed);
       }
     }
+  });
+});
+
+describe("resolvePaths (A1 cheapest-path selection)", () => {
+  // resolvePaths only reads routes + bonuses; programs/redemptions ride along
+  // to satisfy the EngineDataset contract.
+  function makeDataset(overrides: Partial<EngineDataset> = {}): EngineDataset {
+    return { programs: [], routes, bonuses, redemptions: [], ...overrides };
+  }
+
+  it("Bilt 60,000 beats Marriott 150,000 for 60,000 Alaska miles (A1: minimum raw source points)", () => {
+    const result = resolvePaths(
+      "alaska-mileage-plan",
+      60_000,
+      { bilt: 70_000, "marriott-bonvoy": 200_000 },
+      makeDataset(),
+      "2026-09-15",
+    );
+    expect(result).not.toBeNull();
+    expect(result!.chosenPath.fromProgramSlug).toBe("bilt");
+    expect(result!.chosenPath.kind).toBe("transfer");
+    expect(result!.chosenPath.requiredSourcePoints).toBe(60_000);
+    expect(result!.chosenPath.routeKey).toBe("bilt→alaska-mileage-plan");
+    const marriottAlt = result!.alternatePaths.find(
+      (p) => p.fromProgramSlug === "marriott-bonvoy",
+    );
+    expect(marriottAlt).toBeDefined();
+    expect(marriottAlt!.requiredSourcePoints).toBe(150_000);
+  });
+
+  it("Amex transfer (77,000 under the live 30% promo) beats direct Hilton use (200,000) at 2026-09-15", () => {
+    const result = resolvePaths(
+      "hilton-honors",
+      200_000,
+      { "hilton-honors": 250_000, "amex-mr": 300_000 },
+      makeDataset(),
+      "2026-09-15",
+    );
+    expect(result).not.toBeNull();
+    expect(result!.chosenPath.fromProgramSlug).toBe("amex-mr");
+    expect(result!.chosenPath.kind).toBe("transfer");
+    expect(result!.chosenPath.requiredSourcePoints).toBe(77_000);
+    expect(result!.chosenPath.routeKey).toBe("amex-mr→hilton-honors");
+    expect(result!.chosenPath.activeBonus).not.toBeNull();
+    expect(result!.chosenPath.activeBonus!.bonusPercent).toBe(30);
+  });
+
+  it("after the promo window (2026-10-15) Amex still wins at 100,000 but activeBonus is null", () => {
+    const result = resolvePaths(
+      "hilton-honors",
+      200_000,
+      { "hilton-honors": 250_000, "amex-mr": 300_000 },
+      makeDataset(),
+      "2026-10-15",
+    );
+    expect(result).not.toBeNull();
+    expect(result!.chosenPath.fromProgramSlug).toBe("amex-mr");
+    expect(result!.chosenPath.requiredSourcePoints).toBe(100_000);
+    expect(result!.chosenPath.activeBonus).toBeNull();
+  });
+
+  it("tie-break: direct use wins over equal-cost transfers (50,000 Hyatt, all paths cost 50,000)", () => {
+    // chase-ur→world-of-hyatt and bilt→world-of-hyatt are both real 1:1 routes,
+    // so direct, chase, and bilt all need exactly 50,000 — direct wins (A1).
+    const result = resolvePaths(
+      "world-of-hyatt",
+      50_000,
+      { "world-of-hyatt": 60_000, "chase-ur": 60_000, bilt: 60_000 },
+      makeDataset(),
+      "2026-09-15",
+    );
+    expect(result).not.toBeNull();
+    expect(result!.chosenPath.kind).toBe("direct");
+    expect(result!.chosenPath.fromProgramSlug).toBe("world-of-hyatt");
+    expect(result!.chosenPath.requiredSourcePoints).toBe(50_000);
+    expect(result!.chosenPath.routeKey).toBeUndefined();
+  });
+
+  it('tie-break: among equal transfer paths the lowest fromProgramSlug wins ("bilt" < "chase-ur")', () => {
+    const result = resolvePaths(
+      "world-of-hyatt",
+      50_000,
+      { "chase-ur": 60_000, bilt: 60_000 },
+      makeDataset(),
+      "2026-09-15",
+    );
+    expect(result).not.toBeNull();
+    expect(result!.chosenPath.fromProgramSlug).toBe("bilt");
+    expect(result!.alternatePaths.map((p) => p.fromProgramSlug)).toEqual([
+      "chase-ur",
+    ]);
+  });
+
+  it("no affordable path: the max-coverage candidate is still chosen (Marriott 150,000 vs 100,000 held)", () => {
+    const result = resolvePaths(
+      "alaska-mileage-plan",
+      60_000,
+      { "marriott-bonvoy": 100_000 },
+      makeDataset(),
+      "2026-09-15",
+    );
+    expect(result).not.toBeNull();
+    expect(result!.chosenPath.fromProgramSlug).toBe("marriott-bonvoy");
+    expect(result!.chosenPath.requiredSourcePoints).toBe(150_000);
+  });
+
+  it("inactive routes never become candidates (A5 fail-closed)", () => {
+    const inactiveBiltAlaska = {
+      ...findRoute("bilt", "alaska-mileage-plan"),
+      active: false,
+    } satisfies TransferRouteSeed;
+    const result = resolvePaths(
+      "alaska-mileage-plan",
+      60_000,
+      { bilt: 100_000 },
+      makeDataset({ routes: [inactiveBiltAlaska] }),
+      "2026-09-15",
+    );
+    expect(result).toBeNull();
+  });
+
+  it("zero or absent balances never become candidates", () => {
+    const result = resolvePaths(
+      "alaska-mileage-plan",
+      60_000,
+      { bilt: 0 },
+      makeDataset(),
+      "2026-09-15",
+    );
+    expect(result).toBeNull();
+  });
+
+  it("returns null when no held program reaches the partner at all", () => {
+    const result = resolvePaths(
+      "alaska-mileage-plan",
+      60_000,
+      { "chase-ur": 500_000 },
+      makeDataset(),
+      "2026-09-15",
+    );
+    expect(result).toBeNull();
   });
 });
