@@ -424,14 +424,18 @@ Covered inline in Architecture Patterns 1–6 (all sourced from Context7 `/47ng/
 | A4 | LinkedIn WebView may restrict localStorage (guard needed) | Pitfall 6 | If wrong, the try/catch is harmless dead code |
 | A5 | Featured-redemption teaser as the empty state | Pitfall 9 | Design discretion; any explicit empty state satisfies the requirement |
 
-## Open Questions
+## Open Questions (RESOLVED)
+
+Both questions were ratified by the approved 04-UI-SPEC (Checker Sign-Off: PASS) and are implemented in plans 04-03/04-04.
 
 1. **Does Phase 4 include a "Copy link" affordance?**
    - What we know: INPUT-03 only requires that the URL encodes balances; the address bar already satisfies it. Phase 5 owns OG/unfurl polish.
    - Recommendation: ship a small `navigator.clipboard.writeText(location.href)` button now (trivial, completes the share story for the demo); Phase 5 makes shared links unfurl well.
+   - RESOLVED: recommendation adopted — 04-UI-SPEC Copywriting Contract specifies the "Copy my link" primary CTA (clipboard copy of the current URL, "Link copied" confirmation swap, 44px touch target, sanctioned terracotta use #2). Built in plan 04-04.
 2. **How much editorial styling lands in Phase 4 vs Phase 7?**
    - What we know: PLAT-05 (design system across all pages) is Phase 7; but the wow reveal is this phase's success criterion and the tokens (Fraunces `opsz`, `text-display-xl`, cream/ink/terracotta) already exist.
    - Recommendation: Phase 4 builds real structure with existing tokens — big Fraunces hero deltas, card layout, section hierarchy — and defers imagery, animation, and fine typography to Phase 7. Don't ship gray boxes; don't chase pixel-perfection either.
+   - RESOLVED: recommendation adopted — 04-UI-SPEC locks the Phase 4 scope to existing tokens (typography table, color reserved list, spacing scale) with real card/section structure; imagery, animation, and fine typography stay in Phase 7. Implemented in plans 04-03/04-04.
 
 ## Environment Availability
 
