@@ -132,7 +132,7 @@ Plans:
 
 Plans:
 
-- [ ] 05-01-PLAN.md — Foundations: vitest @ alias, vendored OG fonts, buildShareContent + interestSchema pure modules with tests
+- [x] 05-01-PLAN.md — Foundations: vitest @ alias, vendored OG fonts, buildShareContent + interestSchema pure modules with tests
 - [ ] 05-02-PLAN.md — /methodology static page rendering engine-sourced numbers, SiteFooter, results link (VAL-03)
 - [ ] 05-03-PLAN.md — /og ImageResponse route, metadataBase, generateMetadata per share link (PLAT-03)
 - [ ] 05-04-PLAN.md — interest_signups schema + drizzle-kit push, joinAdvisorWaitlist action, AdvisorTease form (PLAT-04)
