@@ -20,7 +20,7 @@
 
 - [x] **VAL-01**: Each result shows dual valuation side by side: representative cash fare AND cents-per-point, with the dollar delta as the hero number
 - [x] **VAL-02**: Cpp math follows TPG convention: (cash fare − taxes/fees) ÷ points × 100
-- [ ] **VAL-03**: A methodology page explains fare sourcing, taxes/fees treatment, and the dynamic-award-pricing disclaimer
+- [x] **VAL-03**: A methodology page explains fare sourcing, taxes/fees treatment, and the dynamic-award-pricing disclaimer
 - [x] **VAL-04**: Each result displays its "Verified [date]" stamp from the database
 - [x] **VAL-05**: When a transfer bonus is active, valuations auto-adjust (bonus-adjusted cpp) and the bonus is surfaced in the result
 
