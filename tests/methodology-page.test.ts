@@ -51,9 +51,10 @@ describe("/methodology (VAL-03)", () => {
     let cursor = 0;
     for (const heading of SECTION_HEADINGS) {
       const match = html.indexOf(`>${heading}</h2>`, cursor);
-      expect(match, `missing or out-of-order <h2> "${heading}"`).toBeGreaterThan(
-        -1,
-      );
+      expect(
+        match,
+        `missing or out-of-order <h2> "${heading}"`,
+      ).toBeGreaterThan(-1);
       cursor = match;
     }
     expect(html.match(/<h2[^>]*>/g)).toHaveLength(SECTION_HEADINGS.length);
@@ -78,7 +79,11 @@ describe("/methodology (VAL-03)", () => {
     const conservativePoints = anchor.pointsMax ?? anchor.pointsMin;
     expect(html).toContain(
       formatCpp(
-        cppX100(anchor.cashFareCents, anchor.taxesFeesCents, conservativePoints),
+        cppX100(
+          anchor.cashFareCents,
+          anchor.taxesFeesCents,
+          conservativePoints,
+        ),
       ),
     );
     expect(html).toContain(formatDollars(anchor.cashFareCents));
