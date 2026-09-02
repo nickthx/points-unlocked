@@ -83,4 +83,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-01 after Phase 2 (Redemption Database) completion — curated dataset live in Neon: 21 programs, 46 transfer routes, 36 redemptions (34 verified against 2026 sources), pure transfer-math engine, idempotent one-command seed*
+*Last updated: 2026-09-02 after Phase 3 (Valuation & Ranking Engine) completion — sealed pure-TypeScript engine behind `src/engine/index.ts`: A1 cheapest-path transfer resolution, TPG cpp + wow-delta math in exact integer units (VAL-02), hybrid bookable-now/almost-there ranking with live-bonus sensitivity CI-verified end-to-end (VAL-05); design rulings A1/A2 + Bilt 0.1¢ baseline ratified by Nick 2026-09-01; 90 tests incl. framework-purity gate*
