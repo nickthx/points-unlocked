@@ -72,75 +72,73 @@ export async function GET(request: Request): Promise<Response> {
     // wow delta) — the baseline question is a sentence, not a delta, so it
     // renders in ink at a smaller size and the separate title line is omitted.
     return new ImageResponse(
-      (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            width: "100%",
-            height: "100%",
-            padding: 72,
-            background: CREAM,
-            color: INK,
-            fontFamily: "Inter",
-          }}
-        >
-          <div style={{ display: "flex", fontSize: 28 }}>{share.eyebrow}</div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          width: "100%",
+          height: "100%",
+          padding: 72,
+          background: CREAM,
+          color: INK,
+          fontFamily: "Inter",
+        }}
+      >
+        <div style={{ display: "flex", fontSize: 28 }}>{share.eyebrow}</div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            {isResult ? (
-              <div
-                style={{
-                  fontFamily: "Fraunces",
-                  fontWeight: 600,
-                  fontSize: 176,
-                  lineHeight: 1,
-                  letterSpacing: "-0.02em",
-                  color: "#c05f33",
-                }}
-              >
-                {share.headline}
-              </div>
-            ) : (
-              <div
-                style={{
-                  fontFamily: "Fraunces",
-                  fontWeight: 600,
-                  fontSize: 88,
-                  lineHeight: 1.05,
-                  color: INK,
-                }}
-              >
-                {share.headline}
-              </div>
-            )}
-
-            {isResult ? (
-              <div
-                style={{
-                  display: "flex",
-                  fontFamily: "Fraunces",
-                  fontWeight: 600,
-                  fontSize: 44,
-                  lineHeight: 1.15,
-                  lineClamp: 2,
-                }}
-              >
-                {share.title}
-              </div>
-            ) : null}
-
-            <div style={{ display: "flex", fontSize: 28, opacity: 0.7 }}>
-              {share.subline}
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {isResult ? (
+            <div
+              style={{
+                fontFamily: "Fraunces",
+                fontWeight: 600,
+                fontSize: 176,
+                lineHeight: 1,
+                letterSpacing: "-0.02em",
+                color: "#c05f33",
+              }}
+            >
+              {share.headline}
             </div>
-
-            <div style={{ display: "flex", fontSize: 22, opacity: 0.6 }}>
-              points-unlocked.vercel.app
+          ) : (
+            <div
+              style={{
+                fontFamily: "Fraunces",
+                fontWeight: 600,
+                fontSize: 88,
+                lineHeight: 1.05,
+                color: INK,
+              }}
+            >
+              {share.headline}
             </div>
+          )}
+
+          {isResult ? (
+            <div
+              style={{
+                display: "flex",
+                fontFamily: "Fraunces",
+                fontWeight: 600,
+                fontSize: 44,
+                lineHeight: 1.15,
+                lineClamp: 2,
+              }}
+            >
+              {share.title}
+            </div>
+          ) : null}
+
+          <div style={{ display: "flex", fontSize: 28, opacity: 0.7 }}>
+            {share.subline}
+          </div>
+
+          <div style={{ display: "flex", fontSize: 22, opacity: 0.6 }}>
+            points-unlocked.vercel.app
           </div>
         </div>
-      ),
+      </div>,
       {
         width: 1200,
         height: 630,
