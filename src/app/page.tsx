@@ -1,41 +1,36 @@
-import { count, isNotNull } from "drizzle-orm";
+import type { SearchParams } from "nuqs/server";
 
-import { db, redemptions } from "@/db";
+import { CoreExperience } from "@/components/core-experience";
+import { loadBalanceParams } from "@/lib/balance-params";
 
-// Phase 1 placeholder: force-dynamic proves the live DB path on every request
-// (D-16). Phase 2+ moves to cached reads per ARCHITECTURE.md.
-export const dynamic = "force-dynamic";
+// D-04 homepage — Phase 4 replaces the Phase 1 placeholder (wordmark + live
+// DB count) with the guest core experience. The DB import, the count query,
+// and the forced-dynamic export were DELETED, not migrated: the guest flow never touches
+// Postgres (T-04-11), and error handling now lives in the island (T-01-07
+// precedent carried forward there).
+//
+// Server component, no client directive. Awaiting searchParams makes the
+// route dynamic implicitly (Pitfall 3 / RESEARCH anti-pattern: do NOT add
+// `export const dynamic`), so a shared URL server-renders full ranked results
+// into the initial HTML (INPUT-03).
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  // nuqs loader — same parser map the island uses (Pattern 1, one source of
+  // truth). The island reads the URL itself via useQueryStates; awaiting here
+  // is what opts the route into per-request rendering.
+  await loadBalanceParams(searchParams);
 
-// D-04 homepage shell: wordmark + pitch + in-progress note. This is the real
-// production app shell (D-01 — no holding page); Phase 4 replaces it with the
-// balance-entry flow. Server component, zero client JS.
-export default async function Home() {
-  let dbStatus = "infrastructure: warming up";
-  try {
-    const [row] = await db
-      .select({ n: count() })
-      .from(redemptions)
-      .where(isNotNull(redemptions.verifiedAt));
-    dbStatus = `${row.n} verified redemptions live`;
-  } catch {
-    // T-01-07: never render the caught error — it can embed connection details.
-    // Neutral fallback set above.
-  }
+  // Pitfall 7: the repo's SOLE clock read for this flow — once per request,
+  // server-side. The island reuses this prop for every client recompute and
+  // the engine never reads the clock, so server HTML and hydrated results agree.
+  const asOf = new Date().toISOString().slice(0, 10);
 
   return (
-    <main className="flex flex-1 flex-col items-center justify-center bg-cream px-6 text-center">
-      <h1 className="font-display text-display text-ink sm:text-display-xl">
-        Points Unlocked
-      </h1>
-      <p className="mt-6 max-w-md text-lg leading-8 text-ink/70">
-        See what your credit card points are actually worth.
-      </p>
-      <p className="mt-12 text-sm tracking-wide text-terracotta uppercase">
-        In progress — launching soon
-      </p>
-      <p className="mt-2 text-xs tracking-wide text-ink/40 uppercase">
-        {dbStatus}
-      </p>
+    <main className="bg-cream flex flex-1 flex-col">
+      <CoreExperience asOf={asOf} />
     </main>
   );
 }
