@@ -18,12 +18,46 @@ const inter = Inter({
   display: "swap",
 });
 
+// Absolute origin for metadataBase (PLAT-03). Fixed production constant with
+// an optional NEXT_PUBLIC_SITE_URL override — never derived from Vercel's
+// injected per-deployment host variable: preview hosts sit behind Deployment
+// Protection, so a crawler following an og:image on that host gets a 401 and
+// the canonical URL is wrong (T-05-10).
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://points-unlocked.vercel.app";
+
 export const metadata: Metadata = {
   title: "Points Unlocked",
   description: "See what your credit card points are actually worth.",
   // D-03 noindex gate: keep the pre-launch site out of search indexes.
   // Removing this is an explicit Phase 7 launch-gate task.
   robots: { index: false, follow: false },
+  // Relative openGraph/twitter image URLs resolve against this (Pitfall 2 —
+  // omitting it is a build error). Note: unfurl crawlers ignore noindex (A5).
+  metadataBase: new URL(SITE_URL),
+  // Site-wide social defaults; `/` overrides these per share link with
+  // complete openGraph/twitter objects (nested objects are shallow-replaced,
+  // not deep-merged). /og with no params renders the branded baseline card.
+  openGraph: {
+    type: "website",
+    siteName: "Points Unlocked",
+    title: "Points Unlocked",
+    description: "See what your credit card points are actually worth.",
+    images: [
+      {
+        url: "/og",
+        width: 1200,
+        height: 630,
+        alt: "Points Unlocked — what are your points actually worth?",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Points Unlocked",
+    description: "See what your credit card points are actually worth.",
+    images: ["/og"],
+  },
 };
 
 export default function RootLayout({
