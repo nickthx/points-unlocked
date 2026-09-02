@@ -16,12 +16,12 @@ The "wow" moment: a user sees that the points they were about to burn at 1¢ eac
 
 ### Active
 
-- [ ] User can enter points balances for 8 programs: Chase UR, Amex MR, Capital One, Citi TY, Bilt, World of Hyatt, Hilton Honors, Marriott Bonvoy
-- [ ] App shows ranked redemptions matched to the user's balances — hybrid ranking: bookable-now redemptions ordered by wow delta, then an "almost there" section showing what a bit more earning unlocks
-- [ ] Each redemption shows dual valuation side by side: retail cash fare AND cents-per-point, with a transparent methodology note
+- [x] User can enter points balances for 8 programs: Chase UR, Amex MR, Capital One, Citi TY, Bilt, World of Hyatt, Hilton Honors, Marriott Bonvoy — Validated in Phase 4: Core Experience (formatted NumericFormat inputs, instant re-rank on edit, no submit button; human walkthrough 2026-09-02)
+- [x] App shows ranked redemptions matched to the user's balances — hybrid ranking: bookable-now redemptions ordered by wow delta, then an "almost there" section showing what a bit more earning unlocks — Validated in Phase 4: Core Experience (Bookable now + Almost there sections rendered in engine order with "you're X points away" callouts)
+- [ ] Each redemption shows dual valuation side by side: retail cash fare AND cents-per-point, with a transparent methodology note — side-by-side cash fare + cpp, transfer path, balance chip, booking guidance, and Verified stamp shipped in Phase 4; methodology note lands in Phase 5 (Credibility Layer)
 - [ ] Curated redemption database of ~80–120 entries (sweet spots, transfer ratios, rough award pricing) — built together: Claude drafts from research, Nick corrects with real numbers — Phase 2 delivered the foundation: 36 entries (34 verified 2026-09-01 against live sources, all 8 programs covered); growth to 80–120 continues alongside later phases
 - [x] Static transfer rates in the data model, with a manual field for transfer bonuses (Nick enters these by hand for now) — Validated in Phase 2: Redemption Database (46 routes with ratio/increment/block-bonus modeling, dated manual bonus rows, one live verified promo)
-- [ ] App works instantly with no login; an optional "save my balances" prompts sign-up (Clerk)
+- [ ] App works instantly with no login; an optional "save my balances" prompts sign-up (Clerk) — no-login guest flow validated in Phase 4 (URL-state share links + localStorage persistence under A1 precedence, zero DB reads on /); Clerk save flow still pending
 - [ ] Saved user record holds: identity (email/OAuth), points balances, travel goals (stored only, no v1 ranking effect), and bookmarked redemptions
 - [ ] Legal handling of user data: privacy policy, consent, and deletion rights
 - [ ] "Coming soon" tease of the v2 AI card-roadmap advisor
@@ -83,4 +83,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-02 after Phase 3 (Valuation & Ranking Engine) completion — sealed pure-TypeScript engine behind `src/engine/index.ts`: A1 cheapest-path transfer resolution, TPG cpp + wow-delta math in exact integer units (VAL-02), hybrid bookable-now/almost-there ranking with live-bonus sensitivity CI-verified end-to-end (VAL-05); design rulings A1/A2 + Bilt 0.1¢ baseline ratified by Nick 2026-09-01; 90 tests incl. framework-purity gate*
+*Last updated: 2026-09-02 after Phase 4 (Core Experience) completion — end-to-end guest flow live on /: 8-program formatted balance form, nuqs URL state (`/?ur=90000&mr=50000` server-renders identical results), localStorage persistence with A1 share-link precedence, wow result card (dollar delta first, cash fare + cpp side by side, transfer path, balance chip, booking guidance, Verified stamp), Almost-there near-miss section, Copy-my-link CTA; 4/4 plans, 17/17 must-haves verified, 152 tests; code review flagged formatCpp float rounding (CR-01) for follow-up*
