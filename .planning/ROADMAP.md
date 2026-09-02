@@ -128,11 +128,15 @@ Plans:
   2. Shared links unfurl with proper OG tags and a branded OG image (verified in a link-preview inspector)
   3. A "coming soon" tease for the v2 AI card-roadmap advisor is present with an interest hook
 
-**Plans**: TBD
+**Plans**: 5 plans
 
 Plans:
 
-- [ ] 05-01: TBD
+- [ ] 05-01-PLAN.md — Foundations: vitest @ alias, vendored OG fonts, buildShareContent + interestSchema pure modules with tests
+- [ ] 05-02-PLAN.md — /methodology static page rendering engine-sourced numbers, SiteFooter, results link (VAL-03)
+- [ ] 05-03-PLAN.md — /og ImageResponse route, metadataBase, generateMetadata per share link (PLAT-03)
+- [ ] 05-04-PLAN.md — interest_signups schema + drizzle-kit push, joinAdvisorWaitlist action, AdvisorTease form (PLAT-04)
+- [ ] 05-05-PLAN.md — Mount footer + tease, deploy, curl probes, LinkedIn Post Inspector + waitlist row human-verify
 
 ### Phase 6: Accounts & Legal
 
