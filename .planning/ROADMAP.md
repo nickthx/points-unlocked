@@ -103,11 +103,19 @@ Plans:
   3. The "Almost there" section shows near-miss redemptions with "you're X points away" callouts
   4. Balances survive a page reload (localStorage) and a shared URL reproduces the same results in a fresh browser
 
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
 
-- [ ] 04-01: TBD
+**Wave 1** *(parallel)*
+- [ ] 04-01-PLAN.md — Install nuqs + react-number-format; URL param codec + localStorage precedence layer with hostile-input tests (INPUT-02/03)
+- [ ] 04-02-PLAN.md — Display formatters (heroDelta, currency/cpp/date) + transfer-path strings, tested against real seed routes (VAL-01/04, RANK-04)
+
+**Wave 2** *(blocked on Wave 1)*
+- [ ] 04-03-PLAN.md — Presentational components: 8-input balance form, wow result card, almost-there section (INPUT-01, RANK-01..05, VAL-01/04)
+
+**Wave 3** *(blocked on Wave 2)*
+- [ ] 04-04-PLAN.md — Page composition: NuqsAdapter, dynamic server page, client island (engine + storage + Copy-my-link + empty states), human walkthrough checkpoint
 
 ### Phase 5: Credibility Layer
 
@@ -170,7 +178,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 (5 and 6 
 | 1. Foundation | 5/5 | Complete    | 2026-09-01 |
 | 2. Redemption Database | 0/TBD | Not started | - |
 | 3. Valuation & Ranking Engine | 0/TBD | Not started | - |
-| 4. Core Experience | 0/TBD | Not started | - |
+| 4. Core Experience | 0/4 | Planned | - |
 | 5. Credibility Layer | 0/TBD | Not started | - |
 | 6. Accounts & Legal | 0/TBD | Not started | - |
 | 7. Editorial Polish & Launch | 0/TBD | Not started | - |
