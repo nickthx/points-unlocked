@@ -4,8 +4,8 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Phase 4 UI-SPEC approved
-last_updated: "2026-09-02T02:04:36.834Z"
-last_activity: 2026-09-02 -- Phase 4 planning complete
+last_updated: "2026-09-02T15:11:33.490Z"
+last_activity: 2026-09-02 -- Phase 04 execution started
 progress:
   total_phases: 7
   completed_phases: 3
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-31)
 
 **Core value:** The "wow" moment — a user sees that the points they were about to burn at 1¢ each are actually a business-class flight, with concrete numbers.
-**Current focus:** Phase 03 — valuation-ranking-engine
+**Current focus:** Phase 04 — core-experience
 
 ## Current Position
 
-Phase: 4
-Plan: Not started
-Status: Ready to execute
-Last activity: 2026-09-02 -- Phase 4 planning complete
+Phase: 04 (core-experience) — EXECUTING
+Plan: 1 of 4
+Status: Executing Phase 04
+Last activity: 2026-09-02 -- Phase 04 execution started
 
 Progress: [██████████] 100%
 

@@ -108,8 +108,8 @@ Plans:
 Plans:
 
 **Wave 1** *(parallel)*
-- [ ] 04-01-PLAN.md — Install nuqs + react-number-format; URL param codec + localStorage precedence layer with hostile-input tests (INPUT-02/03)
-- [ ] 04-02-PLAN.md — Display formatters (heroDelta, currency/cpp/date) + transfer-path strings, tested against real seed routes (VAL-01/04, RANK-04)
+- [x] 04-01-PLAN.md — Install nuqs + react-number-format; URL param codec + localStorage precedence layer with hostile-input tests (INPUT-02/03)
+- [x] 04-02-PLAN.md — Display formatters (heroDelta, currency/cpp/date) + transfer-path strings, tested against real seed routes (VAL-01/04, RANK-04)
 
 **Wave 2** *(blocked on Wave 1)*
 - [ ] 04-03-PLAN.md — Presentational components: 8-input balance form, wow result card, almost-there section (INPUT-01, RANK-01..05, VAL-01/04)
