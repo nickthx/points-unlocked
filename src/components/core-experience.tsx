@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useQueryStates } from "nuqs";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -206,7 +207,16 @@ export function CoreExperience({ asOf }: CoreExperienceProps) {
         <div className="flex flex-col">
           {results.bookableNow.length > 0 && (
             <section className="flex flex-col gap-6">
-              <h2 className={SECTION_HEADING_CLASS}>Bookable now</h2>
+              <div className="flex flex-col gap-2">
+                <h2 className={SECTION_HEADING_CLASS}>Bookable now</h2>
+                {/* VAL-03: the methodology link lives under the results heading. */}
+                <Link
+                  href="/methodology"
+                  className="text-ink/70 text-sm leading-5 underline-offset-4 hover:underline"
+                >
+                  How we calculate these numbers →
+                </Link>
+              </div>
               {/* Engine array order is the ranking (RANK-01) — never re-sort. */}
               <ul className="flex flex-col gap-6">
                 {results.bookableNow.map((result) => (
