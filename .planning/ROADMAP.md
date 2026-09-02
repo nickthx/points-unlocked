@@ -14,7 +14,7 @@ Build bottom-up in horizontal layers: stand up the production skeleton on Vercel
 - [x] **Phase 1: Foundation** - Next.js 16 + Neon + CI skeleton deployed to production Vercel (completed 2026-09-01)
 - [ ] **Phase 2: Redemption Database** - Schema, typed seed files, and the verified curated dataset
 - [ ] **Phase 3: Valuation & Ranking Engine** - Pure TypeScript engine: transfer paths, cpp math, wow delta, hybrid ranking
-- [ ] **Phase 4: Core Experience** - Balance entry → ranked results flow, shareable URLs, guest-first
+- [x] **Phase 4: Core Experience** - Balance entry → ranked results flow, shareable URLs, guest-first
 - [ ] **Phase 5: Credibility Layer** - Methodology page, OG cards, v2 advisor tease
 - [ ] **Phase 6: Accounts & Legal** - Optional Clerk save, bookmarks, goals, privacy/deletion
 - [ ] **Phase 7: Editorial Polish & Launch** - Design system pass, mobile/WebView hardening, launch gate
@@ -115,7 +115,7 @@ Plans:
 - [x] 04-03-PLAN.md — Presentational components: 8-input balance form, wow result card, almost-there section (INPUT-01, RANK-01..05, VAL-01/04)
 
 **Wave 3** *(blocked on Wave 2)*
-- [ ] 04-04-PLAN.md — Page composition: NuqsAdapter, dynamic server page, client island (engine + storage + Copy-my-link + empty states), human walkthrough checkpoint
+- [x] 04-04-PLAN.md — Page composition: NuqsAdapter, dynamic server page, client island (engine + storage + Copy-my-link + empty states), human walkthrough checkpoint
 
 ### Phase 5: Credibility Layer
 

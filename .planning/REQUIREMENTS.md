@@ -4,21 +4,21 @@
 
 ### Balance Input
 
-- [ ] **INPUT-01**: User can enter points balances for 8 programs (Chase UR, Amex MR, Capital One, Citi TY, Bilt, World of Hyatt, Hilton Honors, Marriott Bonvoy) with formatted number inputs, no login required
-- [ ] **INPUT-02**: Balances persist in localStorage so a returning guest keeps their numbers
-- [ ] **INPUT-03**: Balances encode into the URL so a user can share a link that reproduces their results
+- [x] **INPUT-01**: User can enter points balances for 8 programs (Chase UR, Amex MR, Capital One, Citi TY, Bilt, World of Hyatt, Hilton Honors, Marriott Bonvoy) with formatted number inputs, no login required
+- [x] **INPUT-02**: Balances persist in localStorage so a returning guest keeps their numbers
+- [x] **INPUT-03**: Balances encode into the URL so a user can share a link that reproduces their results
 
 ### Results & Ranking
 
-- [ ] **RANK-01**: User sees redemptions they can book now with current balances, ranked by wow delta (transfer-partner value minus cash-out value)
-- [ ] **RANK-02**: User sees an "Almost there" section for redemptions within reach, with a "you're X points away" callout
+- [x] **RANK-01**: User sees redemptions they can book now with current balances, ranked by wow delta (transfer-partner value minus cash-out value)
+- [x] **RANK-02**: User sees an "Almost there" section for redemptions within reach, with a "you're X points away" callout
 - [ ] **RANK-03**: Each result is tagged with which of the user's balances it uses, showing the cheapest transfer path when multiple programs reach the same partner
 - [ ] **RANK-04**: Each result shows its transfer path explicitly (e.g., "via Chase UR → World of Hyatt 1:1")
 - [ ] **RANK-05**: Each result includes short how-to-book guidance (2–4 lines, curated)
 
 ### Valuation & Credibility
 
-- [ ] **VAL-01**: Each result shows dual valuation side by side: representative cash fare AND cents-per-point, with the dollar delta as the hero number
+- [x] **VAL-01**: Each result shows dual valuation side by side: representative cash fare AND cents-per-point, with the dollar delta as the hero number
 - [ ] **VAL-02**: Cpp math follows TPG convention: (cash fare − taxes/fees) ÷ points × 100
 - [ ] **VAL-03**: A methodology page explains fare sourcing, taxes/fees treatment, and the dynamic-award-pricing disclaimer
 - [ ] **VAL-04**: Each result displays its "Verified [date]" stamp from the database

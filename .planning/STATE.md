@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: 04-04 Task 3 checkpoint (human-verify) awaiting approval
-last_updated: "2026-09-02T15:39:16.419Z"
-last_activity: 2026-09-02 -- Phase 04 execution started
+status: verifying
+stopped_at: "04-04 Tasks 1-2 committed (1b3ef46, 0366366); paused at Task 3 checkpoint:human-verify — awaiting walkthrough approval"
+last_updated: "2026-09-02T15:47:52.407Z"
+last_activity: 2026-09-02
 progress:
   total_phases: 7
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 18
-  completed_plans: 17
-  percent: 94
+  completed_plans: 18
+  percent: 100
 ---
 
 # Project State
@@ -27,8 +27,8 @@ See: .planning/PROJECT.md (updated 2026-08-31)
 
 Phase: 04 (core-experience) — EXECUTING
 Plan: 4 of 4
-Status: Executing Phase 04
-Last activity: 2026-09-02 -- Phase 04 execution started
+Status: Phase complete — ready for verification
+Last activity: 2026-09-02
 
 Progress: [██████████] 100%
 
@@ -56,6 +56,7 @@ Progress: [██████████] 100%
 *Updated after each plan completion*
 | Phase 01 P04 | 3min | 3 tasks | 3 files |
 | Phase 01 P05 | 6min | 3 tasks | 7 files |
+| Phase 04 P04 | 10min | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -71,6 +72,10 @@ Recent decisions affecting current work:
 - [Phase 01]: Vercel project points-unlocked on free *.vercel.app subdomain; Git auto-deploy unconditional; DATABASE_URL sourced only via Neon Marketplace injection + vercel env pull
 - [Phase ?]: Neon client is lazy-initialized (Proxy) so next build succeeds without DATABASE_URL at module eval; connection resolves at first query
 - [Phase ?]: Homepage is force-dynamic in Phase 1 to prove the live DB path (D-16); Phase 2+ moves to cached reads
+- [Phase 04]: Phase 1 placeholder page deleted, not migrated — awaiting searchParams makes / dynamic implicitly; no force-dynamic, no @/db import in the guest flow
+- [Phase 04]: asOf derived once per request on the server and passed as a prop; island and engine are clock-free so SSR and hydration agree
+- [Phase 04]: A1 precedence — storage-restored balances pushed to URL with history: replace; storage written only after the visitor edits, so share links never clobber stored balances
+- [Phase 04]: Engine throw renders only the neutral UI-SPEC error string; caught error never rendered or logged
 
 ### Pending Todos
 
@@ -91,6 +96,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-09-02T15:39:16.396Z
+Last session: 2026-09-02T15:47:09.372Z
 Stopped at: 04-04 Tasks 1-2 committed (1b3ef46, 0366366); paused at Task 3 checkpoint:human-verify — awaiting walkthrough approval
-Resume file: .planning/phases/04-core-experience/04-04-PLAN.md
+Resume file: None
