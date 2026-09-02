@@ -1,0 +1,302 @@
+"use client";
+
+import { useQueryStates } from "nuqs";
+import { useEffect, useMemo, useRef, useState } from "react";
+
+import { AlmostThere } from "@/components/almost-there";
+import { BalanceForm } from "@/components/balance-form";
+import { ResultCard } from "@/components/result-card";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+// Filename-collision hazard: src/data/transfers.ts (seed ARRAYS) and
+// src/engine/transfers.ts (engine FUNCTIONS) share a name — import arrays
+// ONLY from the "@/data" barrel and the engine ONLY from "@/engine". Never
+// import "@/db" here: this file ships to every visitor (Pitfall 8 / T-04-11).
+import { bonuses, programs, redemptions, routes } from "@/data";
+import type { RedemptionSeed } from "@/data";
+import { rankRedemptions } from "@/engine";
+import type { EnterableProgramSlug, RankedResults } from "@/engine";
+import {
+  PARAM_KEY_BY_SLUG,
+  balanceParsers,
+  balancesToParams,
+  paramsToBalances,
+} from "@/lib/balance-params";
+import {
+  readStoredBalances,
+  resolveInitialBalances,
+  writeStoredBalances,
+} from "@/lib/balance-storage";
+import { formatDollars, formatPoints, formatVerifiedDate } from "@/lib/format";
+
+// The guest-flow client island (INPUT-01/02/03, RANK-01/02, VAL-01). Owns the
+// three-way state dance — URL (nuqs) ↔ browser storage ↔ engine — and composes
+// the plan 04-03 presentational components. The engine runs in a useMemo per
+// edit: no submit button, no spinner, no server round-trip (RESEARCH Pattern 2).
+//
+// Accent discipline (UI-SPEC): terracotta appears here exactly once — the
+// "Copy my link" primary CTA (sanctioned use #2). The page hero heading, the
+// section headings, and every state copy stay ink.
+
+interface CoreExperienceProps {
+  /**
+   * Pitfall 7: the engine's `asOf` is derived ONCE on the server per request
+   * (src/app/page.tsx) and threaded through this prop. Every client recompute
+   * reuses it, so server HTML and hydrated results agree across midnight and
+   * transfer-bonus boundaries. This file never reads the clock.
+   */
+  asOf: string;
+}
+
+type StorageLike = Pick<Storage, "getItem" | "setItem">;
+
+/**
+ * Pitfall 6 / T-04-14: the ONLY place browser storage is reached for. Access
+ * itself can throw in restricted WebViews (LinkedIn in-app browser, private
+ * modes) — return null and the island silently degrades to URL-only behavior.
+ * Called from effects only (Pitfall 2), never during render.
+ */
+function getSafeStorage(): StorageLike | null {
+  try {
+    return window.localStorage;
+  } catch {
+    return null;
+  }
+}
+
+/** A5 teaser default: the first featured, verified redemption in seed order. */
+const featuredTeaser: RedemptionSeed | undefined = redemptions.find(
+  (redemption) => redemption.featured && redemption.verifiedAt !== null,
+);
+
+const dataset = { programs, routes, bonuses, redemptions };
+
+const SECTION_HEADING_CLASS =
+  "font-heading text-ink text-[1.75rem] leading-tight font-semibold";
+
+export function CoreExperience({ asOf }: CoreExperienceProps) {
+  // nuqs defaults are exactly what INPUT-03 wants: shallow=true (no server
+  // round-trip per keystroke) and history="replace" (typing never spams the
+  // back button). First render is URL-only on both server and client.
+  const [params, setParams] = useQueryStates(balanceParsers);
+  const balances = paramsToBalances(params);
+
+  // Live recompute keyed on the URL state + the server clock (Pitfall 7).
+  // T-04-12 / T-01-07: an engine throw renders the neutral error copy only —
+  // the caught error is never rendered or logged.
+  const results = useMemo<RankedResults | null>(() => {
+    try {
+      return rankRedemptions({
+        balances: paramsToBalances(params),
+        dataset,
+        asOf,
+      });
+    } catch {
+      return null;
+    }
+  }, [params, asOf]);
+
+  // A1 edit ownership: editing any input claims the balance set as the
+  // visitor's own; only then is storage written (Pattern 4 rule 3).
+  const hasEditedRef = useRef(false);
+  const hydratedRef = useRef(false);
+
+  // Pitfall 2: storage is read in an effect AFTER mount — never during render
+  // or in a state initializer — so server HTML and first client paint match.
+  // Runs once (ref-guarded; idempotent under Strict Mode double-invoke).
+  useEffect(() => {
+    if (hydratedRef.current) return;
+    hydratedRef.current = true;
+
+    const storage = getSafeStorage();
+    if (storage === null) return;
+
+    const action = resolveInitialBalances(
+      paramsToBalances(params),
+      readStoredBalances(storage),
+    );
+    // A1 precedence: source === "url" → do NOTHING. A share link drives the
+    // display but must never overwrite the visitor's own stored balances.
+    if (action.source === "storage") {
+      // Pattern 4 rule 2: push stored balances into the URL with a replace so
+      // the bare "/" visit is instantly shareable again with no history spam.
+      void setParams(balancesToParams(action.balances), {
+        history: "replace",
+      });
+    }
+  }, [params, setParams]);
+
+  // Pattern 4 rule 3: persist the full balance set on every URL change, but
+  // only after the visitor has edited (A1 — never on a share-link visit).
+  useEffect(() => {
+    if (!hasEditedRef.current) return;
+    const storage = getSafeStorage();
+    if (storage === null) return;
+    writeStoredBalances(storage, paramsToBalances(params));
+  }, [params]);
+
+  function handleBalanceChange(
+    slug: EnterableProgramSlug,
+    value: number | null,
+  ) {
+    hasEditedRef.current = true;
+    void setParams({ [PARAM_KEY_BY_SLUG[slug]]: value });
+  }
+
+  // "Copy my link" (UI-SPEC Open Question 1 ruling): clipboard copy of the
+  // current URL with a 2s "Link copied" swap. T-04-14: clipboard may be
+  // absent or denied in WebViews — silent no-op, never an error UI.
+  const [copied, setCopied] = useState(false);
+  useEffect(() => {
+    if (!copied) return;
+    const timeout = window.setTimeout(() => setCopied(false), 2000);
+    return () => window.clearTimeout(timeout);
+  }, [copied]);
+
+  async function handleCopyLink() {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+    } catch {
+      // T-04-14: degrade silently — the URL bar still carries the share link.
+    }
+  }
+
+  const hasBalances = Object.keys(balances).length > 0;
+
+  return (
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 py-12 sm:px-6 md:py-16">
+      <header className="flex flex-col gap-6">
+        {/* UI-SPEC: the sole permitted text-display-xl use, clamped to
+            text-display below md. Ink, not terracotta — the delta is the drama. */}
+        <h1 className="font-display text-ink text-display md:text-display-xl font-semibold">
+          What are your points actually worth?
+        </h1>
+        <BalanceForm
+          balances={balances}
+          onBalanceChange={handleBalanceChange}
+        />
+        <Button
+          type="button"
+          onClick={handleCopyLink}
+          // Sanctioned accent use #2 + UI-SPEC 44px touch target (h-11).
+          className="bg-terracotta hover:bg-terracotta/90 h-11 min-w-44 self-start px-6 text-base font-semibold text-white"
+        >
+          <span aria-live="polite">
+            {copied ? "Link copied" : "Copy my link"}
+          </span>
+        </Button>
+      </header>
+
+      {/* Pitfall 9: every branch is an explicit, designed state. */}
+      {results === null ? (
+        <ErrorState />
+      ) : !hasBalances ? (
+        <EmptyState />
+      ) : results.bookableNow.length === 0 &&
+        results.almostThere.length === 0 ? (
+        <SparseState />
+      ) : (
+        <div className="flex flex-col">
+          {results.bookableNow.length > 0 && (
+            <section className="flex flex-col gap-6">
+              <h2 className={SECTION_HEADING_CLASS}>Bookable now</h2>
+              {/* Engine array order is the ranking (RANK-01) — never re-sort. */}
+              <ul className="flex flex-col gap-6">
+                {results.bookableNow.map((result) => (
+                  <li key={result.redemption.slug}>
+                    <ResultCard
+                      result={result}
+                      programs={programs}
+                      routes={routes}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+          <AlmostThere
+            results={results.almostThere}
+            programs={programs}
+            routes={routes}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** T-04-12: neutral copy only — no error detail ever reaches the DOM. */
+function ErrorState() {
+  return (
+    <p className="text-ink text-base leading-6">
+      Something went wrong showing your results. Refresh the page to try again.
+    </p>
+  );
+}
+
+/**
+ * Pitfall 9 empty state (no balances) with the A5 featured teaser. The teaser
+ * shows ONLY direct seed fields — no wow delta and no engine math, because a
+ * delta requires a balance and inventing one would be UI arithmetic.
+ */
+function EmptyState() {
+  return (
+    <section className="flex flex-col gap-6">
+      <div className="flex flex-col gap-2">
+        <h2 className={SECTION_HEADING_CLASS}>
+          Your points are worth more than you think
+        </h2>
+        <p className="text-ink/70 text-base leading-6">
+          Enter a balance above to see your best redemptions — like this one:
+        </p>
+      </div>
+      {featuredTeaser !== undefined && featuredTeaser.verifiedAt !== null && (
+        <Card className="text-ink [--card-spacing:--spacing(4)] sm:[--card-spacing:--spacing(6)]">
+          <CardHeader>
+            <CardTitle className="text-ink text-[1.75rem] leading-tight font-semibold">
+              {featuredTeaser.title}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <dl className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1">
+                <dt className="text-ink/70 text-sm font-semibold">Cash fare</dt>
+                <dd className="text-ink text-base leading-6">
+                  ~{formatDollars(featuredTeaser.cashFareCents)} cash fare
+                </dd>
+              </div>
+              <div className="flex flex-col gap-1">
+                <dt className="text-ink/70 text-sm font-semibold">From</dt>
+                <dd className="text-ink text-base leading-6">
+                  {formatPoints(featuredTeaser.pointsMin)} points
+                </dd>
+              </div>
+            </dl>
+          </CardContent>
+          <CardFooter>
+            <p className="text-ink/70 text-sm leading-5">
+              Verified {formatVerifiedDate(featuredTeaser.verifiedAt)}
+            </p>
+          </CardFooter>
+        </Card>
+      )}
+    </section>
+  );
+}
+
+/** Pitfall 9 sparse state: balances entered, both tiers empty. */
+function SparseState() {
+  return (
+    <p className="text-ink text-base leading-6">
+      Nothing bookable with these balances yet. Add more programs above, or keep
+      earning — Almost there shows what&apos;s within reach.
+    </p>
+  );
+}

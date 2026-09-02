@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter } from "next/font/google";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "./globals.css";
 
 // D-13: Fraunces chosen for its optical-size (opsz) axis — it carries the big
@@ -33,7 +34,12 @@ export default function RootLayout({
       lang="en"
       className={`${fraunces.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">{children}</body>
+      {/* Pitfall 1: every nuqs hook throws at runtime without the framework
+          adapter wrapping the tree — this is the one required wrap for the
+          URL-state balance flow (INPUT-03). */}
+      <body className="flex min-h-full flex-col">
+        <NuqsAdapter>{children}</NuqsAdapter>
+      </body>
     </html>
   );
 }
