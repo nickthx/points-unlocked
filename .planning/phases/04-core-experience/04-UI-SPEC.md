@@ -1,10 +1,11 @@
 ---
 phase: 4
 slug: core-experience
-status: draft
+status: approved
 shadcn_initialized: true
 preset: radix-nova (baseColor neutral, cssVariables, lucide, tw-animate-css)
 created: 2026-09-01
+reviewed_at: 2026-09-01
 ---
 
 # Phase 4 — UI Design Contract
@@ -144,11 +145,11 @@ No new registry pulls planned this phase. If the planner adds one, it must come 
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [x] Dimension 1 Copywriting: PASS
+- [x] Dimension 2 Visuals: PASS
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: PASS (FLAG, non-blocking: `text-display-xl` 72px is a fifth size — scoped to one page-level hero, clamps to 48px below `md`; planner should consider deferring the 72px instance to Phase 7 if it sits adjacent to a 48px card hero)
+- [x] Dimension 5 Spacing: PASS
+- [x] Dimension 6 Registry Safety: PASS
 
-**Approval:** pending
+**Approval:** APPROVED — gsd-ui-checker, 2026-09-01
