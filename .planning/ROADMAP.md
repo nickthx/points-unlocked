@@ -112,7 +112,7 @@ Plans:
 - [x] 04-02-PLAN.md — Display formatters (heroDelta, currency/cpp/date) + transfer-path strings, tested against real seed routes (VAL-01/04, RANK-04)
 
 **Wave 2** *(blocked on Wave 1)*
-- [ ] 04-03-PLAN.md — Presentational components: 8-input balance form, wow result card, almost-there section (INPUT-01, RANK-01..05, VAL-01/04)
+- [x] 04-03-PLAN.md — Presentational components: 8-input balance form, wow result card, almost-there section (INPUT-01, RANK-01..05, VAL-01/04)
 
 **Wave 3** *(blocked on Wave 2)*
 - [ ] 04-04-PLAN.md — Page composition: NuqsAdapter, dynamic server page, client island (engine + storage + Copy-my-link + empty states), human walkthrough checkpoint
