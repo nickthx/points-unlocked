@@ -8,6 +8,7 @@ import {
   primaryKey,
   serial,
   text,
+  timestamp,
 } from "drizzle-orm/pg-core";
 
 // D-16 fulfilled: the Phase 1 health_check placeholder is replaced by the four
@@ -16,6 +17,8 @@ import {
 // ratios as numerator/denominator — no floats, no numeric (Pitfall 2: float
 // ratios fail Marriott math and compose wrong with bonuses). Derived values
 // (cpp, wow delta) are never persisted; the engine computes them.
+// interest_signups (PLAT-04) is the first table with a runtime writer; the
+// curated four remain seed-only and scripts/seed.ts never touches it.
 
 export const programKind = pgEnum("program_kind", ["bank", "airline", "hotel"]);
 
@@ -120,4 +123,18 @@ export const redemptions = pgTable("redemptions", {
   imageSlug: text("image_slug"),
   featured: boolean("featured").notNull().default(false),
   notes: text("notes"),
+});
+
+// PLAT-04 advisor-waitlist signal. Written only by the joinAdvisorWaitlist
+// Server Action (src/app/actions/interest.ts) — never by the seed script.
+export const interestSignups = pgTable("interest_signups", {
+  id: serial("id").primaryKey(),
+  // Lower-cased + trimmed by interestSchema before insert; unique so repeat
+  // submits are idempotent via onConflictDoNothing (T-05-12).
+  email: text("email").notNull().unique(),
+  // Where the signal came from — lets v2 filter ("advisor-tease" today).
+  source: text("source").notNull().default("advisor-tease"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
 });
