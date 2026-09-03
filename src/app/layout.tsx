@@ -3,6 +3,8 @@ import { Fraunces, Inter } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "./globals.css";
 
+import { SiteFooter } from "@/components/site-footer";
+
 // D-13: Fraunces chosen for its optical-size (opsz) axis — it carries the big
 // dollar numbers in the Phase 4 wow reveal, not just headlines.
 const fraunces = Fraunces({
@@ -72,7 +74,12 @@ export default function RootLayout({
           adapter wrapping the tree — this is the one required wrap for the
           URL-state balance flow (INPUT-03). */}
       <body className="flex min-h-full flex-col">
-        <NuqsAdapter>{children}</NuqsAdapter>
+        {/* VAL-03: SiteFooter sits inside the adapter after every route's
+            content; mt-auto pins it to the bottom of the flex-column body. */}
+        <NuqsAdapter>
+          {children}
+          <SiteFooter />
+        </NuqsAdapter>
       </body>
     </html>
   );

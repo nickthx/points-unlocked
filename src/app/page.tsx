@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { SearchParams } from "nuqs/server";
 
+import { AdvisorTease } from "@/components/advisor-tease";
 import { CoreExperience } from "@/components/core-experience";
 import { loadBalanceParams, paramsToBalances } from "@/lib/balance-params";
 import { buildShareContent } from "@/lib/share-content";
@@ -78,6 +79,11 @@ export default async function Home({
   return (
     <main className="bg-cream flex flex-1 flex-col">
       <CoreExperience asOf={asOf} />
+      {/* PLAT-04: v2 advisor tease + interest hook, aligned to the island's
+          container. No props — the tease never receives asOf or share text. */}
+      <div className="mx-auto w-full max-w-3xl px-4 pb-16 sm:px-6">
+        <AdvisorTease />
+      </div>
     </main>
   );
 }
